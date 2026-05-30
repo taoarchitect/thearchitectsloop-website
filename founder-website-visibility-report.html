@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website SEO Readiness Checklist for Founders | The Architect’s Loop</title>
+  <meta name="description" content="Create a manual website visibility report covering search positioning, technical readiness and trust signals. Free client-side checklist for founders." />
+  <link rel="canonical" href="https://thearchitectsloop.com/founder-website-visibility-report.html" />
+  <link rel="icon" type="image/png" href="/images/tal favicon.png" />
+  <link rel="shortcut icon" type="image/png" href="/images/tal favicon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The Architect’s Loop" />
+  <meta property="og:title" content="Website SEO Readiness Checklist for Founders | The Architect’s Loop" />
+  <meta property="og:description" content="Create a manual website visibility report covering clarity, search readiness, technical setup and trust signals." />
+  <meta property="og:url" content="https://thearchitectsloop.com/founder-website-visibility-report.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Website SEO Readiness Checklist for Founders" />
+  <meta name="twitter:description" content="Create a manual website visibility report in your browser." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0a0a0a',
+            paper: '#f4f4f0',
+            muted: '#6b6b6b',
+            accent: '#1a56ff',
+            warn: '#b45309',
+            good: '#166534',
+            danger: '#991b1b',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    select, input, textarea {
+      border-radius: 0;
+    }
+    input[type='range'] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      background: #0a0a0a;
+      border-radius: 0;
+      outline: none;
+    }
+    input[type='range']::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: #f4f4f0;
+      border: 2px solid #0a0a0a;
+      cursor: pointer;
+    }
+    input[type='range']::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      background: #f4f4f0;
+      border: 2px solid #0a0a0a;
+      cursor: pointer;
+      border-radius: 0;
+    }
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6b6b6b;
+      border-top: 1px solid rgba(10,10,10,0.15);
+      padding-top: 1.25rem;
+      margin-top: 0.25rem;
+    }
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .score-bar-track {
+      height: 12px;
+      background: #e5e5e0;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      background: #0a0a0a;
+      transition: width 0.2s ease;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .score-bar-fill { transition: none; }
+    }
+    @media print {
+      body { background: #ffffff !important; }
+      .no-print { display: none !important; }
+      .print-break { break-inside: avoid; }
+      .bg-ink { background: #ffffff !important; color: #0a0a0a !important; border: 2px solid #0a0a0a !important; }
+      .text-paper, .text-paper\/60, .text-paper\/75 { color: #0a0a0a !important; }
+    }
+  </style>
+</head>
+<body class="bg-paper text-ink antialiased min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
+    <nav class="flex flex-wrap items-center justify-between gap-4 border-b border-ink/20 pb-4 mb-8 no-print" aria-label="Toolkit navigation">
+      <a href="./" class="text-xs font-bold uppercase tracking-[0.2em] hover:text-accent">The Architect’s Loop</a>
+      <a href="./ad-revenue-estimator.html" class="text-[10px] font-bold uppercase tracking-[0.16em] text-muted hover:text-accent">
+        Ad Revenue Estimator →
+      </a>
+    </nav>
+    <header class="border-b-2 border-ink pb-6 mb-10">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p class="text-xs uppercase tracking-[0.2em] text-muted mb-2">Client-side only · No crawling · No data leaves your browser</p>
+          <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">Founder Website Visibility Report</h1>
+          <p class="mt-3 text-muted max-w-2xl text-sm leading-relaxed">
+            A manual SEO and clarity readiness checker for founders, developers, freelancers, and small website owners.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2 no-print">
+          <button type="button" id="clearBtn"
+            class="border-2 border-ink bg-paper text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">
+            Clear
+          </button>
+          <button type="button" id="copySummaryBtn"
+            class="border-2 border-ink bg-paper text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">
+            Copy Summary
+          </button>
+          <button type="button" id="exportCsvBtn"
+            class="border-2 border-ink bg-paper text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">
+            Export CSV
+          </button>
+          <button type="button" id="printBtn"
+            class="border-2 border-ink bg-ink text-paper px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-accent hover:border-accent transition-colors">
+            Print Report
+          </button>
+        </div>
+      </div>
+      <p id="feedback" class="text-xs text-accent mt-2 hidden" role="status">Done.</p>
+    </header>
+
+    <main class="grid lg:grid-cols-2 gap-10 lg:gap-14">
+      <section class="border-2 border-ink p-6 sm:p-8 bg-white print-break" aria-labelledby="inputs-heading">
+        <h2 id="inputs-heading" class="text-lg font-bold uppercase tracking-wide mb-6">Website Inputs</h2>
+
+        <form id="visibility-form" class="space-y-5" onsubmit="return false;">
+          <div>
+            <label for="websiteUrl" class="block text-xs font-bold uppercase tracking-wider mb-2">Website URL</label>
+            <input id="websiteUrl" type="url" placeholder="https://example.com"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent" />
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="websiteType" class="block text-xs font-bold uppercase tracking-wider mb-2">Website Type</label>
+              <select id="websiteType"
+                class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent">
+                <option value="utility">Utility / Tool</option>
+                <option value="saas">SaaS / App</option>
+                <option value="portfolio">Portfolio</option>
+                <option value="agency">Agency / Service</option>
+                <option value="content">Blog / Content</option>
+                <option value="local">Local Business</option>
+                <option value="ecommerce">E-commerce</option>
+              </select>
+            </div>
+            <div>
+              <label for="targetCountry" class="block text-xs font-bold uppercase tracking-wider mb-2">Target Market</label>
+              <select id="targetCountry"
+                class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent">
+                <option value="global">Global / English</option>
+                <option value="us">United States</option>
+                <option value="jp">Japan</option>
+                <option value="eu">Europe</option>
+                <option value="local">Local / City-based</option>
+              </select>
+            </div>
+          </div>
+
+          <p class="section-label">Search Positioning</p>
+
+          <div>
+            <label for="primaryKeyword" class="block text-xs font-bold uppercase tracking-wider mb-2">Primary Keyword</label>
+            <input id="primaryKeyword" type="text" placeholder="e.g., ad revenue calculator"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent" />
+          </div>
+
+          <div>
+            <label for="secondaryKeywords" class="block text-xs font-bold uppercase tracking-wider mb-2">Secondary Keywords</label>
+            <textarea id="secondaryKeywords" rows="2" placeholder="e.g., adsense estimator, website RPM calculator"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent"></textarea>
+          </div>
+
+          <div>
+            <label for="pageTitle" class="block text-xs font-bold uppercase tracking-wider mb-2">Homepage / Landing Page Title</label>
+            <input id="pageTitle" type="text" placeholder="Best title tag or page headline"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent" />
+            <p id="titleCount" class="text-[10px] text-muted mt-1">0 characters</p>
+          </div>
+
+          <div>
+            <label for="metaDescription" class="block text-xs font-bold uppercase tracking-wider mb-2">Meta Description</label>
+            <textarea id="metaDescription" rows="3" placeholder="Short search result description"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent"></textarea>
+            <p id="metaCount" class="text-[10px] text-muted mt-1">0 characters</p>
+          </div>
+
+          <div>
+            <label for="h1Text" class="block text-xs font-bold uppercase tracking-wider mb-2">Main H1 / Hero Heading</label>
+            <input id="h1Text" type="text" placeholder="Main page headline"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent" />
+          </div>
+
+          <p class="section-label">Founder Clarity</p>
+
+          <div>
+            <label for="audience" class="block text-xs font-bold uppercase tracking-wider mb-2">Target Audience</label>
+            <input id="audience" type="text" placeholder="e.g., indie founders, small website owners"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent" />
+          </div>
+
+          <div>
+            <label for="offer" class="block text-xs font-bold uppercase tracking-wider mb-2">What does the website help users do?</label>
+            <textarea id="offer" rows="3" placeholder="One clear sentence about the job this site does"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent"></textarea>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <label for="ctaClarity">Call-to-action clarity</label>
+              <span id="ctaClarityLabel" class="font-bold tabular-nums">3 / 5</span>
+            </div>
+            <input type="range" id="ctaClarity" min="1" max="5" step="1" value="3" />
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <label for="mobileQuality">Mobile readability</label>
+              <span id="mobileQualityLabel" class="font-bold tabular-nums">3 / 5</span>
+            </div>
+            <input type="range" id="mobileQuality" min="1" max="5" step="1" value="3" />
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <label for="speedQuality">Perceived page speed</label>
+              <span id="speedQualityLabel" class="font-bold tabular-nums">3 / 5</span>
+            </div>
+            <input type="range" id="speedQuality" min="1" max="5" step="1" value="3" />
+          </div>
+
+          <p class="section-label">Technical Readiness</p>
+
+          <div class="grid sm:grid-cols-2 gap-3 text-sm">
+            <label class="check-row"><input id="hasHttps" type="checkbox" class="w-4 h-4 accent-accent" checked /> HTTPS enabled</label>
+            <label class="check-row"><input id="hasIndexing" type="checkbox" class="w-4 h-4 accent-accent" /> Indexing allowed</label>
+            <label class="check-row"><input id="hasSitemap" type="checkbox" class="w-4 h-4 accent-accent" /> Sitemap exists</label>
+            <label class="check-row"><input id="hasRobots" type="checkbox" class="w-4 h-4 accent-accent" /> robots.txt exists</label>
+            <label class="check-row"><input id="hasSearchConsole" type="checkbox" class="w-4 h-4 accent-accent" /> Search Console connected</label>
+            <label class="check-row"><input id="hasAnalytics" type="checkbox" class="w-4 h-4 accent-accent" /> Analytics installed</label>
+          </div>
+
+          <p class="section-label">Trust Signals</p>
+
+          <div class="grid sm:grid-cols-2 gap-3 text-sm">
+            <label class="check-row"><input id="hasAbout" type="checkbox" class="w-4 h-4 accent-accent" /> About page</label>
+            <label class="check-row"><input id="hasContact" type="checkbox" class="w-4 h-4 accent-accent" /> Contact page</label>
+            <label class="check-row"><input id="hasPrivacy" type="checkbox" class="w-4 h-4 accent-accent" /> Privacy policy</label>
+            <label class="check-row"><input id="hasTerms" type="checkbox" class="w-4 h-4 accent-accent" /> Terms / disclaimer</label>
+            <label class="check-row"><input id="hasProof" type="checkbox" class="w-4 h-4 accent-accent" /> Testimonials / proof</label>
+            <label class="check-row"><input id="hasAuthor" type="checkbox" class="w-4 h-4 accent-accent" /> Visible owner / author</label>
+          </div>
+
+          <p class="section-label">Competitor Snapshot</p>
+
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div>
+              <label for="competitor1" class="block text-xs font-bold uppercase tracking-wider mb-2">Competitor 1</label>
+              <input id="competitor1" type="text" placeholder="URL or name"
+                class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+            </div>
+            <div>
+              <label for="competitor2" class="block text-xs font-bold uppercase tracking-wider mb-2">Competitor 2</label>
+              <input id="competitor2" type="text" placeholder="URL or name"
+                class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+            </div>
+            <div>
+              <label for="competitor3" class="block text-xs font-bold uppercase tracking-wider mb-2">Competitor 3</label>
+              <input id="competitor3" type="text" placeholder="URL or name"
+                class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+            </div>
+          </div>
+        </form>
+
+        <aside class="mt-8 pt-6 border-t border-ink/20 text-xs text-muted leading-relaxed space-y-3">
+          <p><strong class="text-ink">Limit:</strong> This is not a live crawler. It creates a founder-friendly readiness report from the inputs and checks you provide.</p>
+          <p><strong class="text-ink">Use case:</strong> Pre-launch audits, landing page reviews, visibility planning, and website handoff reports.</p>
+        </aside>
+      </section>
+
+      <section class="flex flex-col gap-6" aria-live="polite">
+        <div class="border-2 border-ink p-6 sm:p-8 bg-ink text-paper print-break">
+          <h2 class="text-xs uppercase tracking-[0.2em] text-paper/60 mb-2">Executive Visibility Score</h2>
+          <p id="overallScore" class="text-5xl font-bold tracking-tight tabular-nums">0</p>
+          <p id="overallTier" class="mt-2 text-2xl font-bold tracking-tight">—</p>
+          <p id="overallDetail" class="mt-2 text-sm text-paper/75 leading-relaxed">Complete the inputs to generate a practical website visibility report.</p>
+        </div>
+
+        <div class="border-2 border-ink p-6 sm:p-8 bg-white print-break">
+          <h2 class="text-lg font-bold uppercase tracking-wide mb-4">Category Scores</h2>
+          <div id="scoreBars" class="space-y-5"></div>
+        </div>
+
+        <div class="border-2 border-ink p-6 sm:p-8 bg-white print-break">
+          <h2 class="text-lg font-bold uppercase tracking-wide mb-4">Founder Report</h2>
+          <dl id="reportPanel" class="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm"></dl>
+        </div>
+
+        <div class="border-2 border-ink p-6 sm:p-8 bg-white print-break">
+          <h2 class="text-lg font-bold uppercase tracking-wide mb-4">Priority Action Plan</h2>
+          <div class="grid md:grid-cols-3 gap-4">
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider border-b border-ink/20 pb-2 mb-3">Fix Today</h3>
+              <ul id="fixToday" class="text-sm space-y-2"></ul>
+            </div>
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider border-b border-ink/20 pb-2 mb-3">Fix This Week</h3>
+              <ul id="fixWeek" class="text-sm space-y-2"></ul>
+            </div>
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider border-b border-ink/20 pb-2 mb-3">Fix Later</h3>
+              <ul id="fixLater" class="text-sm space-y-2"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-2 border-ink p-6 sm:p-8 bg-white print-break">
+          <h2 class="text-lg font-bold uppercase tracking-wide mb-4">Suggested Search Snippet</h2>
+          <div class="border border-ink/20 p-4 bg-paper">
+            <p id="snippetTitle" class="text-base font-bold text-accent">Suggested page title appears here</p>
+            <p id="snippetUrl" class="text-xs text-good mt-1">example.com</p>
+            <p id="snippetDescription" class="text-sm text-muted mt-2 leading-relaxed">Suggested meta description appears here.</p>
+          </div>
+        </div>
+
+        <div class="border-2 border-ink p-6 sm:p-8 bg-white print-break">
+          <h2 class="text-lg font-bold uppercase tracking-wide mb-4">Competitor Notes</h2>
+          <ul id="competitorNotes" class="text-sm space-y-2"></ul>
+        </div>
+      </section>
+    </main>
+
+
+    <section class="mt-12 border-t border-ink/20 pt-10 print-break" aria-labelledby="visibility-about-heading">
+      <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-muted">About This Report</p>
+      <h2 id="visibility-about-heading" class="mt-2 text-2xl font-bold tracking-tight">A manual website SEO readiness checklist for founders</h2>
+      <div class="mt-6 grid gap-6 text-sm leading-relaxed text-muted md:grid-cols-3">
+        <div>
+          <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-ink">What it reviews</h3>
+          <p>
+            Record your title, description, headline, audience, technical checks and trust
+            signals to generate a structured visibility-readiness report and action plan.
+          </p>
+        </div>
+        <div>
+          <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-ink">Who it helps</h3>
+          <p>
+            This checklist is designed for founders, freelancers and small website owners
+            reviewing a landing page or preparing a new website for launch.
+          </p>
+        </div>
+        <div>
+          <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-ink">Important limitation</h3>
+          <p>
+            This is not an automated crawler, performance test or live ranking checker.
+            It generates guidance from the information and checkboxes you enter.
+          </p>
+        </div>
+      </div>
+      <div class="mt-8 border-2 border-ink bg-white p-6">
+        <h3 class="text-sm font-bold uppercase tracking-wide">Frequently asked questions</h3>
+        <div class="mt-4 space-y-4 text-sm leading-relaxed">
+          <div>
+            <p class="font-bold text-ink">Will this guarantee Google rankings?</p>
+            <p class="mt-1 text-muted">No. The report helps identify basic readiness gaps; it does not guarantee indexing, traffic or ranking outcomes.</p>
+          </div>
+          <div>
+            <p class="font-bold text-ink">Does this tool crawl or store my website details?</p>
+            <p class="mt-1 text-muted">No. It is a manual browser-based report generator and does not submit your entered inputs to a database.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="mt-12 pt-6 border-t border-ink/20 text-xs text-muted space-y-4">
+      <p>All calculations run in browser memory. No form submission or analytics. Tailwind CSS loads from CDN for styling only.</p>
+
+      <div id="donateSection" class="hidden pt-2 border-t border-black/10">
+        <p class="text-black font-bold uppercase tracking-wider text-[10px] mb-2">Support this tool</p>
+        <p class="mb-2">If this visibility report helped you, optional tips are appreciated.</p>
+        <a id="donateLink" href="#" target="_blank" rel="noopener noreferrer"
+          class="inline-block border-2 border-black bg-black text-white px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-neutral-800 transition-colors">
+          Donate via PayPal
+        </a>
+      </div>
+
+      <div class="pt-4 border-t border-black/10 text-center space-y-2">
+        <p class="text-xs font-medium text-black">A tool by The Architect’s Loop</p>
+        <p class="text-[10px] text-muted">
+          Contact: <a href="mailto:thearchitectsloop@proton.me" class="hover:text-accent underline underline-offset-2">thearchitectsloop@proton.me</a>
+        </p>
+        <nav aria-label="Legal links" class="text-[10px] text-muted">
+          <a href="./privacy.html" class="hover:text-accent underline underline-offset-2">Privacy</a>
+          <span aria-hidden="true"> · </span>
+          <a href="./disclaimer.html" class="hover:text-accent underline underline-offset-2">Disclaimer</a>
+        </nav>
+        <p class="text-[10px] text-neutral-500">© 2026 The Architect’s Loop. Built by Tun Bakyu.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // Paste your PayPal link below. Leave blank to hide the donate section.
+      var PAYPAL_DONATE_URL = 'https://paypal.me/tunbakyu';
+
+      var ids = [
+        'websiteUrl', 'websiteType', 'targetCountry', 'primaryKeyword', 'secondaryKeywords',
+        'pageTitle', 'metaDescription', 'h1Text', 'audience', 'offer',
+        'ctaClarity', 'mobileQuality', 'speedQuality',
+        'hasHttps', 'hasIndexing', 'hasSitemap', 'hasRobots', 'hasSearchConsole', 'hasAnalytics',
+        'hasAbout', 'hasContact', 'hasPrivacy', 'hasTerms', 'hasProof', 'hasAuthor',
+        'competitor1', 'competitor2', 'competitor3'
+      ];
+
+      var checkIds = [
+        'hasHttps', 'hasIndexing', 'hasSitemap', 'hasRobots', 'hasSearchConsole', 'hasAnalytics',
+        'hasAbout', 'hasContact', 'hasPrivacy', 'hasTerms', 'hasProof', 'hasAuthor'
+      ];
+
+      var lastReport = null;
+
+      function val(id) {
+        var el = document.getElementById(id);
+        if (!el) return '';
+        if (el.type === 'checkbox') return el.checked;
+        return String(el.value || '').trim();
+      }
+
+      function num(id) {
+        return Number(document.getElementById(id).value || 0);
+      }
+
+      function clamp(n, min, max) {
+        return Math.max(min, Math.min(max, n));
+      }
+
+      function scoreTextPresence(text, maxPoints) {
+        return text && text.length > 0 ? maxPoints : 0;
+      }
+
+      function containsKeyword(text, keyword) {
+        if (!text || !keyword) return false;
+        return text.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+      }
+
+      function scoreTitle(title, keyword) {
+        var s = 0;
+        if (title.length > 0) s += 35;
+        if (title.length >= 35 && title.length <= 65) s += 30;
+        else if (title.length > 0) s += 10;
+        if (containsKeyword(title, keyword)) s += 25;
+        if (title.length > 0 && title.length < 80) s += 10;
+        return clamp(s, 0, 100);
+      }
+
+      function scoreMeta(meta, keyword) {
+        var s = 0;
+        if (meta.length > 0) s += 30;
+        if (meta.length >= 120 && meta.length <= 165) s += 35;
+        else if (meta.length > 0) s += 12;
+        if (containsKeyword(meta, keyword)) s += 20;
+        if (meta.length > 0 && meta.length < 190) s += 15;
+        return clamp(s, 0, 100);
+      }
+
+      function scoreSearchReadiness() {
+        var keyword = val('primaryKeyword');
+        var title = val('pageTitle');
+        var meta = val('metaDescription');
+        var h1 = val('h1Text');
+
+        var s = 0;
+        s += scoreTextPresence(keyword, 18);
+        s += scoreTitle(title, keyword) * 0.24;
+        s += scoreMeta(meta, keyword) * 0.24;
+        s += h1 ? 12 : 0;
+        s += containsKeyword(h1, keyword) ? 10 : 0;
+        s += val('hasIndexing') ? 10 : 0;
+        s += val('hasSitemap') ? 6 : 0;
+        s += val('hasRobots') ? 4 : 0;
+        s += val('hasSearchConsole') ? 6 : 0;
+        return clamp(Math.round(s), 0, 100);
+      }
+
+      function scoreClarity() {
+        var s = 0;
+        s += scoreTextPresence(val('audience'), 22);
+        s += scoreTextPresence(val('offer'), 28);
+        s += scoreTextPresence(val('primaryKeyword'), 15);
+        s += val('h1Text') ? 15 : 0;
+        s += num('ctaClarity') * 4;
+        return clamp(Math.round(s), 0, 100);
+      }
+
+      function scoreTrust() {
+        var selected = ['hasHttps', 'hasAbout', 'hasContact', 'hasPrivacy', 'hasTerms', 'hasProof', 'hasAuthor']
+          .filter(function (id) { return val(id); }).length;
+        return clamp(Math.round((selected / 7) * 100), 0, 100);
+      }
+
+      function scoreConversion() {
+        var s = 0;
+        s += scoreTextPresence(val('offer'), 28);
+        s += scoreTextPresence(val('audience'), 18);
+        s += num('ctaClarity') * 10;
+        s += num('mobileQuality') * 6;
+        s += num('speedQuality') * 4;
+        s += val('hasProof') ? 10 : 0;
+        return clamp(Math.round(s), 0, 100);
+      }
+
+      function scoreCompetitive() {
+        var competitors = [val('competitor1'), val('competitor2'), val('competitor3')].filter(Boolean).length;
+        var secondary = val('secondaryKeywords').length > 0 ? 20 : 0;
+        var base = competitors === 0 ? 10 : competitors === 1 ? 45 : competitors === 2 ? 70 : 85;
+        return clamp(base + secondary, 0, 100);
+      }
+
+      function classify(score) {
+        if (score >= 85) return ['Launch Ready', 'Your site has strong visibility foundations. Focus next on backlinks, proof, and content depth.'];
+        if (score >= 70) return ['Good Foundation', 'Your site is understandable and close to search-ready. Fix the remaining gaps before serious promotion.'];
+        if (score >= 50) return ['Needs Cleanup', 'The website has potential, but Google and visitors may not fully understand or trust it yet.'];
+        return ['Visibility Risk', 'The site needs basic clarity, trust, and indexing work before expecting meaningful organic discovery.'];
+      }
+
+      function li(text) {
+        return '<li class="flex gap-2"><span class="text-accent font-bold">→</span><span>' + escapeHtml(text) + '</span></li>';
+      }
+
+      function escapeHtml(str) {
+        return String(str || '').replace(/[&<>"']/g, function (m) {
+          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m];
+        });
+      }
+
+      function getCleanDomain(url) {
+        if (!url) return 'example.com';
+        try {
+          return new URL(url).hostname.replace(/^www\./, '');
+        } catch (e) {
+          return url.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0] || 'example.com';
+        }
+      }
+
+      function buildActions(scores) {
+        var today = [];
+        var week = [];
+        var later = [];
+
+        if (!val('primaryKeyword')) today.push('Choose one primary keyword before writing more content.');
+        if (!val('pageTitle')) today.push('Add a clear title tag that includes the main search phrase.');
+        if (!val('metaDescription')) today.push('Write a meta description that explains the page in one sentence.');
+        if (!val('h1Text')) today.push('Add one clear H1 headline that matches the page purpose.');
+        if (!val('offer')) today.push('State what the website helps users do, in plain language.');
+        if (!val('hasIndexing')) today.push('Confirm the site is not blocking search engine indexing.');
+
+        if (!val('hasSearchConsole')) week.push('Connect Google Search Console and submit the site for indexing.');
+        if (!val('hasSitemap')) week.push('Create and submit a sitemap.');
+        if (!val('hasAbout')) week.push('Add an About page or visible ownership statement.');
+        if (!val('hasContact')) week.push('Add a contact method or support email.');
+        if (!val('hasPrivacy')) week.push('Add a privacy policy, especially before ads or analytics.');
+        if (num('mobileQuality') < 4) week.push('Improve mobile readability before driving traffic.');
+        if (num('speedQuality') < 4) week.push('Reduce heavy scripts, images, and slow-loading assets.');
+
+        if (!val('hasProof')) later.push('Add testimonials, usage examples, screenshots, or proof of usefulness.');
+        if (!val('hasTerms')) later.push('Add terms, disclaimer, or usage limitations.');
+        if ([val('competitor1'), val('competitor2'), val('competitor3')].filter(Boolean).length < 2) later.push('Compare at least two competitors and find a clearer positioning angle.');
+        if (!val('secondaryKeywords')) later.push('Add secondary keywords and FAQ sections after the main page is stable.');
+
+        if (today.length === 0) today.push('No urgent basics missing. Review title, H1, and CTA one more time before launch.');
+        if (week.length === 0) week.push('Main weekly tasks look healthy. Focus on publishing useful supporting content.');
+        if (later.length === 0) later.push('Later-stage improvements can focus on backlinks, case studies, and conversion testing.');
+
+        return { today: today.slice(0, 5), week: week.slice(0, 5), later: later.slice(0, 5) };
+      }
+
+      function suggestedTitle(keyword, type) {
+        if (val('pageTitle')) return val('pageTitle');
+        if (!keyword) return 'Clear Website Title with Main Keyword';
+        var suffix = type === 'utility' ? 'Free Tool' : type === 'saas' ? 'Simple Software' : 'Guide';
+        return keyword.replace(/\b\w/g, function (c) { return c.toUpperCase(); }) + ' — ' + suffix;
+      }
+
+      function suggestedMeta(keyword, audience, offer) {
+        if (val('metaDescription')) return val('metaDescription');
+        if (keyword && offer) return offer + ' Use this free report to check clarity, trust, SEO readiness, and next actions.';
+        if (keyword) return 'Check your ' + keyword + ' visibility readiness with a simple founder-friendly report and action checklist.';
+        if (audience) return 'A free website visibility report builder for ' + audience + ' to improve clarity, trust, and search readiness.';
+        return 'Generate a simple website visibility report with SEO readiness, trust checks, competitor notes, and priority actions.';
+      }
+
+      function renderScoreBar(label, score) {
+        return '<div><div class="flex justify-between text-xs mb-1"><span class="font-bold uppercase tracking-wide">' +
+          escapeHtml(label) + '</span><span class="tabular-nums font-bold">' + score + '/100</span></div>' +
+          '<div class="score-bar-track"><div class="score-bar-fill" style="width:' + score + '%"></div></div></div>';
+      }
+
+      function calculate() {
+        var title = val('pageTitle');
+        var meta = val('metaDescription');
+        document.getElementById('titleCount').textContent = title.length + ' characters';
+        document.getElementById('metaCount').textContent = meta.length + ' characters';
+        document.getElementById('ctaClarityLabel').textContent = num('ctaClarity') + ' / 5';
+        document.getElementById('mobileQualityLabel').textContent = num('mobileQuality') + ' / 5';
+        document.getElementById('speedQualityLabel').textContent = num('speedQuality') + ' / 5';
+
+        var scores = {
+          search: scoreSearchReadiness(),
+          clarity: scoreClarity(),
+          trust: scoreTrust(),
+          conversion: scoreConversion(),
+          competitive: scoreCompetitive()
+        };
+
+        var overall = Math.round(
+          scores.search * 0.25 +
+          scores.clarity * 0.20 +
+          scores.trust * 0.20 +
+          scores.conversion * 0.20 +
+          scores.competitive * 0.15
+        );
+
+        var tier = classify(overall);
+        var actions = buildActions(scores);
+        var url = val('websiteUrl');
+        var keyword = val('primaryKeyword');
+        var type = val('websiteType');
+        var suggestedPageTitle = suggestedTitle(keyword, type);
+        var suggestedPageMeta = suggestedMeta(keyword, val('audience'), val('offer'));
+
+        document.getElementById('overallScore').textContent = overall + '/100';
+        document.getElementById('overallTier').textContent = tier[0];
+        document.getElementById('overallDetail').textContent = tier[1];
+
+        document.getElementById('scoreBars').innerHTML = [
+          renderScoreBar('SEO Readiness', scores.search),
+          renderScoreBar('Founder Clarity', scores.clarity),
+          renderScoreBar('Trust Signals', scores.trust),
+          renderScoreBar('Conversion Clarity', scores.conversion),
+          renderScoreBar('Competitive Awareness', scores.competitive)
+        ].join('');
+
+        var reportRows = [
+          ['Website', url || 'Not entered'],
+          ['Type', document.getElementById('websiteType').selectedOptions[0].textContent],
+          ['Market', document.getElementById('targetCountry').selectedOptions[0].textContent],
+          ['Primary keyword', keyword || 'Not selected'],
+          ['Title length', title.length + ' characters'],
+          ['Meta length', meta.length + ' characters'],
+          ['Technical basics', ['hasHttps','hasIndexing','hasSitemap','hasRobots','hasSearchConsole','hasAnalytics'].filter(function (id) { return val(id); }).length + ' / 6 checked'],
+          ['Trust basics', ['hasAbout','hasContact','hasPrivacy','hasTerms','hasProof','hasAuthor'].filter(function (id) { return val(id); }).length + ' / 6 checked']
+        ];
+
+        document.getElementById('reportPanel').innerHTML = reportRows.map(function (r) {
+          return '<div><dt class="text-muted text-xs uppercase tracking-wide">' + escapeHtml(r[0]) +
+            '</dt><dd class="font-medium mt-0.5">' + escapeHtml(r[1]) + '</dd></div>';
+        }).join('');
+
+        document.getElementById('fixToday').innerHTML = actions.today.map(li).join('');
+        document.getElementById('fixWeek').innerHTML = actions.week.map(li).join('');
+        document.getElementById('fixLater').innerHTML = actions.later.map(li).join('');
+
+        document.getElementById('snippetTitle').textContent = suggestedPageTitle;
+        document.getElementById('snippetUrl').textContent = getCleanDomain(url);
+        document.getElementById('snippetDescription').textContent = suggestedPageMeta;
+
+        var competitors = [val('competitor1'), val('competitor2'), val('competitor3')].filter(Boolean);
+        var competitorNotes = [];
+        if (competitors.length === 0) {
+          competitorNotes.push('No competitors entered. Add 2–3 competing pages to understand search intent and positioning.');
+        } else {
+          competitorNotes.push('Review competitor titles and compare whether your page states the outcome more clearly.');
+          competitorNotes.push('Look for one missing angle: simpler, faster, more specific, more trustworthy, or more useful.');
+          competitorNotes.push('Do not copy competitors. Use them to identify what users expect from this search.');
+        }
+        if (competitors.length < 2) {
+          competitorNotes.push('One competitor is not enough. Add at least one more for a more realistic comparison.');
+        }
+        document.getElementById('competitorNotes').innerHTML = competitorNotes.map(li).join('');
+
+        lastReport = {
+          overall: overall,
+          tier: tier[0],
+          detail: tier[1],
+          scores: scores,
+          actions: actions,
+          title: suggestedPageTitle,
+          meta: suggestedPageMeta,
+          domain: getCleanDomain(url),
+          inputs: ids.reduce(function (acc, id) {
+            acc[id] = val(id);
+            return acc;
+          }, {})
+        };
+      }
+
+      function showFeedback(msg) {
+        var fb = document.getElementById('feedback');
+        fb.textContent = msg;
+        fb.classList.remove('hidden');
+        setTimeout(function () { fb.classList.add('hidden'); }, 2200);
+      }
+
+      function buildSummaryText() {
+        calculate();
+        var r = lastReport;
+        var lines = [
+          'FOUNDER WEBSITE VISIBILITY REPORT',
+          '',
+          'Overall Score: ' + r.overall + '/100',
+          'Tier: ' + r.tier,
+          'Detail: ' + r.detail,
+          '',
+          'CATEGORY SCORES',
+          'SEO Readiness: ' + r.scores.search + '/100',
+          'Founder Clarity: ' + r.scores.clarity + '/100',
+          'Trust Signals: ' + r.scores.trust + '/100',
+          'Conversion Clarity: ' + r.scores.conversion + '/100',
+          'Competitive Awareness: ' + r.scores.competitive + '/100',
+          '',
+          'SUGGESTED SEARCH SNIPPET',
+          'Title: ' + r.title,
+          'URL: ' + r.domain,
+          'Description: ' + r.meta,
+          '',
+          'FIX TODAY',
+          r.actions.today.map(function (x) { return '- ' + x; }).join('\n'),
+          '',
+          'FIX THIS WEEK',
+          r.actions.week.map(function (x) { return '- ' + x; }).join('\n'),
+          '',
+          'FIX LATER',
+          r.actions.later.map(function (x) { return '- ' + x; }).join('\n')
+        ];
+        return lines.join('\n');
+      }
+
+      function exportCsv() {
+        calculate();
+        var r = lastReport;
+        var rows = [
+          ['Section', 'Field', 'Value'],
+          ['Summary', 'Overall Score', r.overall + '/100'],
+          ['Summary', 'Tier', r.tier],
+          ['Summary', 'Detail', r.detail],
+          ['Scores', 'SEO Readiness', r.scores.search],
+          ['Scores', 'Founder Clarity', r.scores.clarity],
+          ['Scores', 'Trust Signals', r.scores.trust],
+          ['Scores', 'Conversion Clarity', r.scores.conversion],
+          ['Scores', 'Competitive Awareness', r.scores.competitive],
+          ['Snippet', 'Title', r.title],
+          ['Snippet', 'URL', r.domain],
+          ['Snippet', 'Description', r.meta]
+        ];
+
+        ids.forEach(function (id) {
+          rows.push(['Input', id, r.inputs[id]]);
+        });
+        r.actions.today.forEach(function (a) { rows.push(['Fix Today', 'Action', a]); });
+        r.actions.week.forEach(function (a) { rows.push(['Fix This Week', 'Action', a]); });
+        r.actions.later.forEach(function (a) { rows.push(['Fix Later', 'Action', a]); });
+
+        var csv = rows.map(function (row) {
+          return row.map(function (cell) {
+            var s = String(cell == null ? '' : cell);
+            return '"' + s.replace(/"/g, '""') + '"';
+          }).join(',');
+        }).join('\n');
+
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        var date = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = 'founder-website-visibility-report-' + date + '.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showFeedback('CSV exported.');
+      }
+
+      function clearAll() {
+        ids.forEach(function (id) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          if (el.type === 'checkbox') {
+            el.checked = id === 'hasHttps';
+          } else if (el.type === 'range') {
+            el.value = 3;
+          } else if (el.tagName === 'SELECT') {
+            el.selectedIndex = 0;
+          } else {
+            el.value = '';
+          }
+        });
+        calculate();
+        showFeedback('All inputs cleared.');
+      }
+
+      function initDonateLink() {
+        var url = (PAYPAL_DONATE_URL || '').trim();
+        var section = document.getElementById('donateSection');
+        var link = document.getElementById('donateLink');
+        if (!url) {
+          section.classList.add('hidden');
+          return;
+        }
+        if (!/^https?:\/\//i.test(url)) {
+          url = 'https://' + url.replace(/^\/+/, '');
+        }
+        link.href = url;
+        section.classList.remove('hidden');
+      }
+
+      ids.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', calculate);
+        el.addEventListener('change', calculate);
+      });
+
+      document.getElementById('copySummaryBtn').addEventListener('click', function () {
+        var text = buildSummaryText();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () {
+            showFeedback('Summary copied.');
+          });
+        } else {
+          window.prompt('Copy this summary:', text);
+        }
+      });
+
+      document.getElementById('exportCsvBtn').addEventListener('click', exportCsv);
+      document.getElementById('clearBtn').addEventListener('click', clearAll);
+      document.getElementById('printBtn').addEventListener('click', function () {
+        calculate();
+        window.print();
+      });
+
+      initDonateLink();
+      calculate();
+    })();
+  </script>
+</body>
+</html>

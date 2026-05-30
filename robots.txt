@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://thearchitectsloop.com/sitemap.xml

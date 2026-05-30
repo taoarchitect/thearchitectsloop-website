@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website Ad Revenue Calculator | The Architect’s Loop</title>
+  <meta name="description" content="Estimate potential website ad revenue from pageviews, audience geography, device mix and ad density with this free client-side calculator." />
+  <link rel="canonical" href="https://thearchitectsloop.com/ad-revenue-estimator.html" />
+  <link rel="icon" type="image/png" href="/images/tal favicon.png" />
+  <link rel="shortcut icon" type="image/png" href="/images/tal favicon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The Architect’s Loop" />
+  <meta property="og:title" content="Website Ad Revenue Calculator | The Architect’s Loop" />
+  <meta property="og:description" content="Estimate potential website ad revenue from traffic, geography, device mix and ad density using a free client-side calculator." />
+  <meta property="og:url" content="https://thearchitectsloop.com/ad-revenue-estimator.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Website Ad Revenue Calculator | The Architect’s Loop" />
+  <meta name="twitter:description" content="Estimate website ad revenue scenarios in your browser." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0a0a0a',
+            paper: '#f4f4f0',
+            muted: '#6b6b6b',
+            accent: '#1a56ff',
+            warn: '#b45309',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    input[type='range'] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      background: #0a0a0a;
+      border-radius: 0;
+      outline: none;
+    }
+    input[type='range']::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: #f4f4f0;
+      border: 2px solid #0a0a0a;
+      cursor: pointer;
+    }
+    input[type='range']::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      background: #f4f4f0;
+      border: 2px solid #0a0a0a;
+      cursor: pointer;
+      border-radius: 0;
+    }
+    .bar-track {
+      height: 12px;
+      background: #e5e5e0;
+      position: relative;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: #0a0a0a;
+      transition: width 0.2s ease;
+    }
+    .bar-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #1a56ff;
+    }
+    select, input[type='number'] {
+      border-radius: 0;
+    }
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6b6b6b;
+      border-top: 1px solid rgba(10,10,10,0.15);
+      padding-top: 1.25rem;
+      margin-top: 0.25rem;
+    }
+    .preset-btn {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: 1px solid #0a0a0a;
+      padding: 0.35rem 0.5rem;
+      background: #f4f4f0;
+      cursor: pointer;
+    }
+    .preset-btn:hover { background: #0a0a0a; color: #f4f4f0; }
+    .dimmed { opacity: 0.45; pointer-events: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .bar-fill { transition: none; }
+    }
+  </style>
+</head>
+<body class="bg-paper text-ink antialiased min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
+    <nav class="flex flex-wrap items-center justify-between gap-4 border-b border-ink/20 pb-4 mb-8" aria-label="Toolkit navigation">
+      <a href="./" class="text-xs font-bold uppercase tracking-[0.2em] hover:text-accent">The Architect’s Loop</a>
+      <a href="./founder-website-visibility-report.html" class="text-[10px] font-bold uppercase tracking-[0.16em] text-muted hover:text-accent">
+        Website Visibility Report →
+      </a>
+    </nav>
+    <header class="border-b-2 border-ink pb-6 mb-10">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p class="text-xs uppercase tracking-[0.2em] text-muted mb-2">Client-side only · v1.4 · No data leaves your browser</p>
+          <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">Ad Revenue Potential Estimator</h1>
+          <p class="mt-3 text-muted max-w-2xl text-sm leading-relaxed">
+            Geo-blended RPM model with device mix, direct revenue add-ons, assumptions transparency, and baseline vs. optimized compare.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" id="clearAllBtn"
+            class="border-2 border-ink bg-paper text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">
+            Clear
+          </button>
+          <button type="button" id="copySummaryBtn"
+            class="border-2 border-ink bg-ink text-paper px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-accent hover:border-accent transition-colors">
+            Copy Summary
+          </button>
+          <button type="button" id="exportCsvBtn"
+            class="border-2 border-ink bg-paper text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">
+            Export CSV
+          </button>
+        </div>
+      </div>
+      <p id="copyFeedback" class="text-xs text-accent mt-2 hidden" role="status">Summary copied to clipboard.</p>
+      <p id="clearFeedback" class="text-xs text-muted mt-2 hidden" role="status">All inputs reset to zero.</p>
+      <p id="csvFeedback" class="text-xs text-accent mt-2 hidden" role="status">CSV downloaded.</p>
+    </header>
+
+    <div class="grid lg:grid-cols-2 gap-10 lg:gap-14">
+      <!-- Input panel -->
+      <section class="border-2 border-ink p-6 sm:p-8 bg-white" aria-labelledby="inputs-heading">
+        <h2 id="inputs-heading" class="text-lg font-bold uppercase tracking-wide mb-6">Parameters</h2>
+
+        <form id="estimator-form" class="space-y-5" onsubmit="return false;">
+          <div>
+            <label for="propertyType" class="block text-xs font-bold uppercase tracking-wider mb-2">Property Type</label>
+            <select id="propertyType"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent">
+              <option value="utility">Website Utility</option>
+              <option value="blog" selected>Blog / Content</option>
+              <option value="youtube">YouTube / Video</option>
+              <option value="mobile">Mobile App</option>
+            </select>
+          </div>
+
+          <div id="nicheWrap">
+            <label for="niche" class="block text-xs font-bold uppercase tracking-wider mb-2">Primary Niche</label>
+            <select id="niche"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent">
+              <option value="tech">Tech / Dev</option>
+              <option value="finance" selected>Finance / B2B</option>
+              <option value="lifestyle">Lifestyle / Food</option>
+              <option value="general">General Consumer</option>
+            </select>
+            <p id="nicheUtilityNote" class="hidden mt-2 text-xs text-warn font-medium">Website Utility uses a fixed RPM table — niche does not affect programmatic RPM.</p>
+          </div>
+
+          <div>
+            <label for="traffic" class="block text-xs font-bold uppercase tracking-wider mb-2">Monthly Pageviews / Views</label>
+            <input type="number" id="traffic" min="0" step="1000" value="500000"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium tabular-nums focus:outline-none focus:ring-2 focus:ring-accent" />
+          </div>
+
+          <p class="section-label">Audience Geography Mix</p>
+          <div class="flex flex-wrap gap-2 mb-1" id="geoPresets">
+            <button type="button" class="preset-btn" data-preset="100,0,0">100% Tier 1</button>
+            <button type="button" class="preset-btn" data-preset="0,100,0">100% Tier 2</button>
+            <button type="button" class="preset-btn" data-preset="0,0,100">100% Tier 3</button>
+            <button type="button" class="preset-btn" data-preset="40,30,30">Global Mixed</button>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <label for="tier1Pct">Tier 1 — US / UK / CA</label>
+                <span id="tier1Label" class="font-bold tabular-nums">100%</span>
+              </div>
+              <input type="range" id="tier1Pct" min="0" max="100" step="5" value="100" />
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <label for="tier2Pct">Tier 2 — JP / SG</label>
+                <span id="tier2Label" class="font-bold tabular-nums">0%</span>
+              </div>
+              <input type="range" id="tier2Pct" min="0" max="100" step="5" value="0" />
+            </div>
+            <div class="flex justify-between text-xs">
+              <span>Tier 3 — IN / ID / Mixed</span>
+              <span id="tier3Label" class="font-bold tabular-nums">0%</span>
+            </div>
+          </div>
+
+          <p class="section-label">Device Mix</p>
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <label for="mobileShare">Mobile traffic share</label>
+              <span id="mobileShareLabel" class="font-bold tabular-nums">35% mobile · 65% desktop</span>
+            </div>
+            <input type="range" id="mobileShare" min="0" max="100" step="5" value="35" />
+            <p class="text-[10px] text-muted mt-1">Mobile impressions typically earn ~72% of desktop display RPM.</p>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-baseline mb-2">
+              <label for="density" class="text-xs font-bold uppercase tracking-wider">Ad Placement Density</label>
+              <span id="densityLabel" class="text-sm font-bold tabular-nums">3 units / page</span>
+            </div>
+            <input type="range" id="density" min="1" max="5" step="1" value="3" />
+            <div class="flex justify-between text-[10px] uppercase text-muted mt-1">
+              <span>1 (light)</span>
+              <span>5 (heavy)</span>
+            </div>
+          </div>
+
+          <p class="section-label">Direct Revenue Add-ons</p>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="sponsorship" class="block text-xs font-bold uppercase tracking-wider mb-2">Sponsorships ($/mo)</label>
+              <input type="number" id="sponsorship" min="0" step="100" value="0"
+                class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm tabular-nums focus:outline-none focus:ring-2 focus:ring-accent" />
+            </div>
+            <div>
+              <label for="affiliate" class="block text-xs font-bold uppercase tracking-wider mb-2">Affiliate ($/mo)</label>
+              <input type="number" id="affiliate" min="0" step="100" value="0"
+                class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm tabular-nums focus:outline-none focus:ring-2 focus:ring-accent" />
+            </div>
+          </div>
+
+          <p class="section-label">Compare Mode</p>
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" id="compareEnabled" class="w-4 h-4 border-2 border-ink accent-accent" />
+            <span class="text-sm font-medium">Compare baseline vs. optimized scenario</span>
+          </label>
+
+          <div id="optimizedPanel" class="hidden space-y-4 border-2 border-dashed border-ink/30 p-4 bg-paper/50">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider">Optimized Scenario</span>
+              <button type="button" id="suggestOptBtn" class="preset-btn text-[10px]">Suggest Optimization</button>
+            </div>
+            <div class="space-y-3">
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <label for="optTier1Pct">Tier 1 share</label>
+                  <span id="optTier1Label" class="font-bold tabular-nums">60%</span>
+                </div>
+                <input type="range" id="optTier1Pct" min="0" max="100" step="5" value="60" />
+              </div>
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <label for="optTier2Pct">Tier 2 share</label>
+                  <span id="optTier2Label" class="font-bold tabular-nums">25%</span>
+                </div>
+                <input type="range" id="optTier2Pct" min="0" max="100" step="5" value="25" />
+              </div>
+              <div class="flex justify-between text-xs">
+                <span>Tier 3 share</span>
+                <span id="optTier3Label" class="font-bold tabular-nums">15%</span>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <label for="optMobileShare">Mobile share</label>
+                <span id="optMobileShareLabel" class="font-bold tabular-nums">25%</span>
+              </div>
+              <input type="range" id="optMobileShare" min="0" max="100" step="5" value="25" />
+            </div>
+            <div>
+              <div class="flex justify-between items-baseline mb-2">
+                <label for="optDensity" class="text-xs font-bold uppercase tracking-wider">Density</label>
+                <span id="optDensityLabel" class="text-sm font-bold tabular-nums">4 units</span>
+              </div>
+              <input type="range" id="optDensity" min="1" max="5" step="1" value="4" />
+            </div>
+          </div>
+        </form>
+
+        <aside class="mt-8 pt-6 border-t border-ink/20 text-xs text-muted leading-relaxed space-y-3">
+          <p><strong class="text-ink">Uncertainty range:</strong> Real-world yield can diverge by up to ±40% from seasonal CPM swings, fill rate, and auction dynamics.</p>
+          <p><strong class="text-ink">Logic check:</strong> High scenario caps viewability uplift at 8%. Low scenario applies 25% ad-block on impressions. Compare mode models strategic shifts only — not guaranteed outcomes.</p>
+        </aside>
+      </section>
+
+      <!-- Results panel -->
+      <section class="flex flex-col gap-6" aria-live="polite">
+        <div class="border-2 border-ink p-6 sm:p-8 bg-ink text-paper">
+          <h2 class="text-xs uppercase tracking-[0.2em] text-paper/60 mb-2">Executive Summary</h2>
+          <p id="tierLabel" class="text-2xl font-bold tracking-tight">—</p>
+          <p id="tierDetail" class="mt-2 text-sm text-paper/75 leading-relaxed">—</p>
+          <p id="totalRealisticLine" class="mt-4 text-sm font-bold tabular-nums border-t border-paper/20 pt-4">—</p>
+        </div>
+
+        <!-- v1.1 Assumptions panel -->
+        <div class="border-2 border-ink p-6 sm:p-8 bg-white">
+          <h2 class="text-lg font-bold uppercase tracking-wide mb-4">Active Assumptions</h2>
+          <dl id="assumptionsPanel" class="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm"></dl>
+        </div>
+
+        <div class="border-2 border-ink p-6 sm:p-8 bg-white">
+          <h2 class="text-lg font-bold uppercase tracking-wide mb-4">Scenario Breakdown</h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b-2 border-ink text-left text-xs uppercase tracking-wider">
+                  <th class="py-2 pr-3 font-bold">Scenario</th>
+                  <th class="py-2 pr-3 font-bold tabular-nums">RPM</th>
+                  <th class="py-2 pr-3 font-bold tabular-nums">Programmatic</th>
+                  <th class="py-2 pr-3 font-bold tabular-nums">Direct</th>
+                  <th class="py-2 pr-3 font-bold tabular-nums">Total / Mo</th>
+                  <th class="py-2 font-bold tabular-nums">Total / Yr</th>
+                </tr>
+              </thead>
+              <tbody id="resultsTable" class="divide-y divide-ink/15"></tbody>
+            </table>
+          </div>
+          <p id="formulaNote" class="mt-4 text-xs text-muted font-mono leading-relaxed"></p>
+        </div>
+
+        <!-- v1.2 Compare mode results -->
+        <div id="compareResults" class="hidden border-2 border-accent p-6 sm:p-8 bg-white">
+          <h2 class="text-lg font-bold uppercase tracking-wide mb-4">Baseline vs. Optimized</h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b-2 border-ink text-left text-xs uppercase tracking-wider">
+                  <th class="py-2 pr-4 font-bold">Metric</th>
+                  <th class="py-2 pr-4 font-bold tabular-nums">Baseline</th>
+                  <th class="py-2 pr-4 font-bold tabular-nums">Optimized</th>
+                  <th class="py-2 font-bold tabular-nums">Delta</th>
+                </tr>
+              </thead>
+              <tbody id="compareTable" class="divide-y divide-ink/15"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="border-2 border-ink p-6 sm:p-8 bg-white">
+          <h2 class="text-lg font-bold uppercase tracking-wide mb-4">Relative Yield (Total Monthly)</h2>
+          <div id="barScales" class="space-y-5"></div>
+          <p class="text-[10px] uppercase text-muted mt-4">Includes programmatic + direct · Blue tick = realistic</p>
+        </div>
+
+        <div class="border-2 border-ink p-6 sm:p-8 bg-white">
+          <h2 class="text-lg font-bold uppercase tracking-wide mb-3">Optimization Checklist</h2>
+          <ul id="checklist" class="text-sm space-y-2 list-none"></ul>
+        </div>
+      </section>
+    </div>
+
+
+    <section class="mt-12 border-t border-ink/20 pt-10" aria-labelledby="estimator-about-heading">
+      <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-muted">How This Tool Works</p>
+      <h2 id="estimator-about-heading" class="mt-2 text-2xl font-bold tracking-tight">Estimate website ad revenue potential</h2>
+      <div class="mt-6 grid gap-6 text-sm leading-relaxed text-muted md:grid-cols-3">
+        <div>
+          <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-ink">What it models</h3>
+          <p>
+            Enter pageviews, property type, audience geography, mobile share and ad placement
+            density to view low, realistic and high indicative monthly revenue scenarios.
+          </p>
+        </div>
+        <div>
+          <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-ink">What RPM means</h3>
+          <p>
+            RPM represents estimated revenue per 1,000 views. This calculator blends indicative
+            RPM ranges by audience tier and applies the selected device and density assumptions.
+          </p>
+        </div>
+        <div>
+          <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-ink">Important limitation</h3>
+          <p>
+            The result is not guaranteed income. Real advertising revenue varies with ad network,
+            content, seasonality, fill rate, viewability, user behaviour and advertiser demand.
+          </p>
+        </div>
+      </div>
+      <div class="mt-8 border-2 border-ink bg-white p-6">
+        <h3 class="text-sm font-bold uppercase tracking-wide">Frequently asked questions</h3>
+        <div class="mt-4 space-y-4 text-sm leading-relaxed">
+          <div>
+            <p class="font-bold text-ink">Is this an AdSense earnings guarantee?</p>
+            <p class="mt-1 text-muted">No. It is a planning estimator based on the assumptions you enter, not a prediction or approval guarantee from any advertising network.</p>
+          </div>
+          <div>
+            <p class="font-bold text-ink">Does this tool store my inputs?</p>
+            <p class="mt-1 text-muted">No database submission is used by this tool. Calculations run in your browser.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="mt-12 pt-6 border-t border-ink/20 text-xs text-muted space-y-4">
+      <p>All calculations run in browser memory. No form submission or analytics. Tailwind CSS loads from CDN for styling only.</p>
+      <div id="donateSection" class="hidden pt-2 border-t border-ink/10">
+        <p class="text-ink font-bold uppercase tracking-wider text-[10px] mb-2">Support this tool</p>
+        <p class="mb-2">If this estimator helped you, optional tips are appreciated.</p>
+        <a id="donateLink" href="#" target="_blank" rel="noopener noreferrer"
+          class="inline-block border-2 border-ink bg-ink text-paper px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-accent hover:border-accent transition-colors">
+          Donate via PayPal
+        </a>
+      </div>
+      <div class="pt-4 border-t border-ink/10 text-center space-y-2">
+        <p class="text-xs font-medium text-ink">A tool by The Architect’s Loop</p>
+        <p class="text-[10px] text-muted">
+          Contact: <a href="mailto:thearchitectsloop@proton.me" class="hover:text-accent underline underline-offset-2">thearchitectsloop@proton.me</a>
+        </p>
+        <nav aria-label="Legal links" class="text-[10px] text-muted">
+          <a href="./privacy.html" class="hover:text-accent underline underline-offset-2">Privacy</a>
+          <span aria-hidden="true"> · </span>
+          <a href="./disclaimer.html" class="hover:text-accent underline underline-offset-2">Disclaimer</a>
+        </nav>
+        <p class="text-[10px] text-muted">© 2026 The Architect’s Loop. Built by Tun Bakyu.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // --- YOUR CONFIG: paste your PayPal link below (paypal.me/You or a PayPal donate URL). Leave '' to hide the donate button.
+      var PAYPAL_DONATE_URL = 'https://paypal.me/tunbakyu';
+
+      var AD_BLOCK_RATE = 0.25;
+      var VIEWABILITY_UPLIFT = 1.08;
+      var VIEWABILITY_CAP = 1.12;
+      var UNCERTAINTY_PCT = 40;
+      var MOBILE_RPM_RATIO = 0.72;
+
+      var NICHE_GEO_RPM = {
+        tech: { tier1: [10, 16, 24], tier2: [6, 10, 15], tier3: [1.5, 3.5, 6] },
+        finance: { tier1: [30, 40, 50], tier2: [14, 22, 30], tier3: [4, 7, 11] },
+        lifestyle: { tier1: [7, 12, 18], tier2: [4, 7, 11], tier3: [1, 2.5, 4.5] },
+        general: { tier1: [4, 8, 14], tier2: [2.5, 5.5, 9], tier3: [1, 2, 3] },
+      };
+
+      var UTILITY_GEO_RPM = {
+        tier1: [10, 14, 18], tier2: [6, 9, 12], tier3: [2, 3.5, 5],
+      };
+
+      var PROPERTY_MULT = { utility: 1, blog: 1, youtube: 1.06, mobile: 0.9 };
+
+      var NICHE_LABEL = {
+        tech: 'Tech / Dev', finance: 'Finance / B2B',
+        lifestyle: 'Lifestyle / Food', general: 'General Consumer',
+      };
+
+      var TIER_KEYS = ['tier1', 'tier2', 'tier3'];
+      var TIER_NAMES = ['Tier 1 (US/UK/CA)', 'Tier 2 (JP/SG)', 'Tier 3 (IN/ID/Mixed)'];
+
+      var PROPERTY_LABEL = {
+        utility: 'Website Utility', blog: 'Blog / Content',
+        youtube: 'YouTube / Video', mobile: 'Mobile App',
+      };
+
+      var lastState = {};
+
+      function densityFactor(units) {
+        return 0.55 + units * 0.09;
+      }
+
+      function deviceMultiplier(mobilePct) {
+        var m = mobilePct / 100;
+        return (1 - m) * 1 + m * MOBILE_RPM_RATIO;
+      }
+
+      function getTierRpm(property, niche, tier) {
+        var band = property === 'utility'
+          ? UTILITY_GEO_RPM[tier].slice()
+          : NICHE_GEO_RPM[niche][tier].slice();
+        var mult = PROPERTY_MULT[property] || 1;
+        return band.map(function (v) { return Math.round(v * mult * 100) / 100; });
+      }
+
+      function getBlendedRpm(property, niche, mix, mobilePct) {
+        var dev = deviceMultiplier(mobilePct);
+        var blended = [0, 0, 0];
+        TIER_KEYS.forEach(function (tier, i) {
+          var pct = mix[i] / 100;
+          var band = getTierRpm(property, niche, tier);
+          blended[0] += band[0] * pct;
+          blended[1] += band[1] * pct;
+          blended[2] += band[2] * pct;
+        });
+        return blended.map(function (v) { return Math.round(v * dev * 100) / 100; });
+      }
+
+      function readGeoMix(t1Id, t2Id, labels) {
+        var t1 = Number(document.getElementById(t1Id).value);
+        var t2 = Number(document.getElementById(t2Id).value);
+        if (t1 + t2 > 100) {
+          t2 = 100 - t1;
+          document.getElementById(t2Id).value = t2;
+        }
+        var t3 = 100 - t1 - t2;
+        if (labels) {
+          document.getElementById(labels[0]).textContent = t1 + '%';
+          document.getElementById(labels[1]).textContent = t2 + '%';
+          document.getElementById(labels[2]).textContent = t3 + '%';
+        }
+        return [t1, t2, t3];
+      }
+
+      function setGeoMix(t1Id, t2Id, t1, t2, labels) {
+        document.getElementById(t1Id).value = t1;
+        document.getElementById(t2Id).value = t2;
+        readGeoMix(t1Id, t2Id, labels);
+      }
+
+      function formatMoney(n) {
+        if (!isFinite(n) || n < 0) return '$0';
+        if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+        if (n >= 1e4) return '$' + Math.round(n).toLocaleString('en-US');
+        if (n >= 1000) return '$' + (Math.round(n / 10) * 10).toLocaleString('en-US');
+        return '$' + n.toFixed(0);
+      }
+
+      function formatRpm(n) {
+        return '$' + (Math.round(n * 100) / 100).toFixed(2);
+      }
+
+      function formatDelta(n, pct) {
+        var sign = n >= 0 ? '+' : '';
+        return sign + formatMoney(n) + ' (' + sign + pct.toFixed(1) + '%)';
+      }
+
+      function monthlyProgrammatic(traffic, rpm, density) {
+        return (traffic / 1000) * rpm * densityFactor(density);
+      }
+
+      function computeScenario(traffic, property, niche, mix, mobilePct, density, directMo) {
+        var base = getBlendedRpm(property, niche, mix, mobilePct);
+        var rpmLow = base[0];
+        var rpmMid = base[1];
+        var rpmHigh = Math.min(base[2] * VIEWABILITY_UPLIFT, base[2] * VIEWABILITY_CAP);
+        var effLow = traffic * (1 - AD_BLOCK_RATE);
+        var progLow = monthlyProgrammatic(effLow, rpmLow, density);
+        var progMid = monthlyProgrammatic(traffic, rpmMid, density);
+        var progHigh = monthlyProgrammatic(traffic, rpmHigh, density);
+        return {
+          rpmLow: rpmLow, rpmMid: rpmMid, rpmHigh: rpmHigh,
+          progLow: progLow, progMid: progMid, progHigh: progHigh,
+          totalLow: progLow + directMo,
+          totalMid: progMid + directMo,
+          totalHigh: progHigh + directMo,
+          directMo: directMo,
+          densityFactor: densityFactor(density),
+          deviceMult: deviceMultiplier(mobilePct),
+        };
+      }
+
+      function dominantTier(mix) {
+        var max = Math.max(mix[0], mix[1], mix[2]);
+        if (max === mix[0]) return 'tier1';
+        if (max === mix[1]) return 'tier2';
+        return 'tier3';
+      }
+
+      function classifyTier(monthlyMid, rpmMid) {
+        if (monthlyMid >= 25000 || rpmMid >= 25) {
+          return {
+            label: 'Tier A — Premium Yield',
+            detail: 'Strong blended RPM and/or volume. Programmatic plus direct add-ons support meaningful monetization.',
+          };
+        }
+        if (monthlyMid >= 5000 || rpmMid >= 8) {
+          return {
+            label: 'Tier B — Viable Monetization',
+            detail: 'Sustainable yield with room to optimize geo mix, density, and device layout.',
+          };
+        }
+        if (monthlyMid >= 800 || rpmMid >= 2) {
+          return {
+            label: 'Tier C — Emerging / Thin Margin',
+            detail: 'Revenue is real but geo- and seasonality-sensitive. Prioritize Tier 1 audience growth.',
+          };
+        }
+        return {
+          label: 'Tier D — Subscale / High Risk',
+          detail: 'At current inputs, ads alone may not justify ops cost. Grow traffic, shift geo mix, or expand direct revenue.',
+        };
+      }
+
+      function buildChecklist(property, niche, mix, density, mobilePct, directMo) {
+        var items = [];
+        if (mix[2] >= 40) {
+          items.push('Shift audience mix toward Tier 1–2 (currently ' + mix[2] + '% Tier 3)—often the largest RPM lever.');
+        }
+        if (mix[0] >= 60 && mix[2] < 20) {
+          items.push('Tier 1-heavy mix is a strength— pursue direct deals and newsletter sponsorships to beat open-exchange RPM.');
+        }
+        if (density < 3) {
+          items.push('Test additional viewable placements (target 3 units with strong CLS/LCP) before maxing density at 5.');
+        }
+        if (density >= 4) {
+          items.push('Audit ad density vs. bounce rate; heavy layouts can erode RPM via lower engagement.');
+        }
+        if (mobilePct >= 60) {
+          items.push('Mobile-heavy traffic (' + mobilePct + '%)—optimize mobile layouts, lazy-load ads, and test anchor units.');
+        }
+        if (property === 'utility') {
+          items.push('Utility RPM is geography-driven; niche is ignored—focus on Tier 1 traffic and tool retention.');
+        }
+        if (property === 'youtube') {
+          items.push('Extend mid-roll eligibility (8+ min), improve retention, and bundle direct integrations.');
+        }
+        if (property === 'mobile') {
+          items.push('Optimize in-app mediation waterfalls and rewarded formats; eCPM varies by OS and SDK.');
+        }
+        if (niche === 'finance' || niche === 'tech') {
+          items.push('Pursue contextual direct deals—B2B niches often beat open-exchange RPM.');
+        }
+        if (directMo === 0 && (niche === 'finance' || niche === 'tech' || mix[0] >= 50)) {
+          items.push('Consider sponsorship or affiliate layers—direct revenue is not modeled until you enter it above.');
+        }
+        items.push('Model Q1 seasonal dip (~15–25% CPM) and Q4 uplift (±' + UNCERTAINTY_PCT + '% band).');
+        items.push('Measure ad-block rate; if above 25%, low scenario may still be optimistic.');
+        return items;
+      }
+
+      function renderAssumptions(property, niche, mix, mobilePct, density, scenario) {
+        var mixStr = mix.map(function (v, i) { return TIER_NAMES[i] + ' ' + v + '%'; }).join(' · ');
+        var rows = [
+          ['Property', PROPERTY_LABEL[property]],
+          ['Niche', property === 'utility' ? 'N/A (utility table)' : NICHE_LABEL[niche]],
+          ['Geo mix', mixStr],
+          ['Device mult', scenario.deviceMult.toFixed(3) + ' (' + mobilePct + '% mobile @ 72% RPM)'],
+          ['Density factor', scenario.densityFactor.toFixed(2) + ' (' + density + ' units/page)'],
+          ['Blended RPM', formatRpm(scenario.rpmLow) + ' / ' + formatRpm(scenario.rpmMid) + ' / ' + formatRpm(scenario.rpmHigh)],
+          ['Ad-block (low)', (AD_BLOCK_RATE * 100) + '% impression haircut'],
+          ['Viewability (high)', 'Up to ' + Math.round((VIEWABILITY_UPLIFT - 1) * 100) + '% uplift, capped'],
+          ['Direct add-ons', formatMoney(scenario.directMo) + '/mo (flat all scenarios)'],
+        ];
+        if (property === 'utility') {
+          rows.push(['Note', 'Utility uses fixed RPM table — niche dropdown ignored']);
+        }
+        document.getElementById('assumptionsPanel').innerHTML = rows.map(function (r) {
+          return '<div><dt class="text-muted text-xs uppercase tracking-wide">' + r[0] + '</dt><dd class="font-medium mt-0.5">' + r[1] + '</dd></div>';
+        }).join('');
+      }
+
+      function renderBarScales(low, mid, high) {
+        var max = high > 0 ? high : 1;
+        return ['Low', 'Realistic', 'High'].map(function (label, idx) {
+          var val = [low, mid, high][idx];
+          var pct = Math.min(100, (val / max) * 100);
+          var markerPct = Math.min(100, (mid / max) * 100);
+          return '<div><div class="flex justify-between text-xs mb-1"><span class="font-bold uppercase">' + label +
+            '</span><span class="tabular-nums font-medium">' + formatMoney(val) + '/mo</span></div>' +
+            '<div class="bar-track"><div class="bar-fill' + (idx === 0 ? ' opacity-50' : '') +
+            '" style="width:' + pct + '%"></div>' +
+            (idx === 2 ? '<div class="bar-marker" style="left:' + markerPct + '%" title="Realistic"></div>' : '') +
+            '</div></div>';
+        }).join('');
+      }
+
+      function suggestOptimization(baseMix, baseDensity, baseMobile) {
+        var shift = Math.min(25, baseMix[2]);
+        var optT1 = Math.min(100, baseMix[0] + shift);
+        var optT3 = Math.max(0, baseMix[2] - shift);
+        var optT2 = 100 - optT1 - optT3;
+        if (optT2 < 0) { optT2 = 0; optT3 = 100 - optT1; }
+        setGeoMix('optTier1Pct', 'optTier2Pct', optT1, optT2, ['optTier1Label', 'optTier2Label', 'optTier3Label']);
+        document.getElementById('optDensity').value = Math.min(5, baseDensity + 1);
+        document.getElementById('optDensityLabel').textContent = document.getElementById('optDensity').value + ' units';
+        var optMobile = Math.max(0, baseMobile - (baseMobile > 50 ? 15 : 0));
+        document.getElementById('optMobileShare').value = optMobile;
+        document.getElementById('optMobileShareLabel').textContent = optMobile + '%';
+      }
+
+      function buildSummaryText() {
+        var s = lastState;
+        if (!s.baseline) return '';
+        var lines = [
+          'AD REVENUE POTENTIAL ESTIMATE',
+          'Generated client-side — indicative only (±' + UNCERTAINTY_PCT + '%)',
+          '',
+          'INPUTS',
+          'Property: ' + s.propertyLabel,
+          'Niche: ' + s.nicheLabel,
+          'Traffic: ' + s.traffic.toLocaleString() + '/mo',
+          'Geo mix: T1 ' + s.mix[0] + '% · T2 ' + s.mix[1] + '% · T3 ' + s.mix[2] + '%',
+          'Mobile: ' + s.mobilePct + '% · Density: ' + s.density + ' units',
+          'Direct: ' + formatMoney(s.directMo) + '/mo (sponsorship + affiliate)',
+          '',
+          'BASELINE SCENARIOS (total monthly)',
+          'Low:        ' + formatMoney(s.baseline.totalLow) + '  (RPM ' + formatRpm(s.baseline.rpmLow) + ')',
+          'Realistic:  ' + formatMoney(s.baseline.totalMid) + '  (RPM ' + formatRpm(s.baseline.rpmMid) + ')',
+          'High:       ' + formatMoney(s.baseline.totalHigh) + '  (RPM ' + formatRpm(s.baseline.rpmHigh) + ')',
+          '',
+          'Classification: ' + s.tierLabel,
+        ];
+        if (s.compareEnabled && s.optimized) {
+          lines.push('');
+          lines.push('OPTIMIZED vs BASELINE (realistic total/mo)');
+          lines.push('Baseline:  ' + formatMoney(s.baseline.totalMid));
+          lines.push('Optimized: ' + formatMoney(s.optimized.totalMid));
+          lines.push('Delta:     ' + formatDelta(s.deltaAbs, s.deltaPct));
+        }
+        return lines.join('\n');
+      }
+
+      function recalculate() {
+        var property = document.getElementById('propertyType').value;
+        var niche = document.getElementById('niche').value;
+        var traffic = Math.max(0, Number(document.getElementById('traffic').value) || 0);
+        var density = Number(document.getElementById('density').value);
+        var mobilePct = Number(document.getElementById('mobileShare').value);
+        var sponsorship = Math.max(0, Number(document.getElementById('sponsorship').value) || 0);
+        var affiliate = Math.max(0, Number(document.getElementById('affiliate').value) || 0);
+        var directMo = sponsorship + affiliate;
+        var compareOn = document.getElementById('compareEnabled').checked;
+
+        var mix = readGeoMix('tier1Pct', 'tier2Pct', ['tier1Label', 'tier2Label', 'tier3Label']);
+        document.getElementById('densityLabel').textContent = density + ' unit' + (density === 1 ? '' : 's') + ' / page';
+        document.getElementById('mobileShareLabel').textContent =
+          mobilePct + '% mobile · ' + (100 - mobilePct) + '% desktop';
+
+        var isUtility = property === 'utility';
+        document.getElementById('nicheWrap').classList.toggle('dimmed', isUtility);
+        document.getElementById('nicheUtilityNote').classList.toggle('hidden', !isUtility);
+
+        document.getElementById('optimizedPanel').classList.toggle('hidden', !compareOn);
+        document.getElementById('compareResults').classList.toggle('hidden', !compareOn);
+
+        var baseline = computeScenario(traffic, property, niche, mix, mobilePct, density, directMo);
+        var tier = classifyTier(baseline.totalMid, baseline.rpmMid);
+        document.getElementById('tierLabel').textContent = tier.label;
+        document.getElementById('tierDetail').textContent = tier.detail;
+        document.getElementById('totalRealisticLine').textContent =
+          'Realistic total: ' + formatMoney(baseline.totalMid) + '/mo · ' + formatMoney(baseline.totalMid * 12) + '/yr' +
+          (directMo > 0 ? ' (incl. ' + formatMoney(directMo) + ' direct)' : '');
+
+        renderAssumptions(property, niche, mix, mobilePct, density, baseline);
+
+        var scenarios = [
+          { name: 'Low', rpm: baseline.rpmLow, prog: baseline.progLow, total: baseline.totalLow, note: '25% ad-block + low RPM' },
+          { name: 'Realistic', rpm: baseline.rpmMid, prog: baseline.progMid, total: baseline.totalMid, note: 'Blended mid RPM' },
+          { name: 'High', rpm: baseline.rpmHigh, prog: baseline.progHigh, total: baseline.totalHigh, note: 'Ceiling RPM + viewability' },
+        ];
+
+        document.getElementById('resultsTable').innerHTML = scenarios.map(function (r) {
+          return '<tr><td class="py-3 pr-3 font-medium">' + r.name +
+            '<span class="block text-[10px] text-muted font-normal">' + r.note + '</span></td>' +
+            '<td class="py-3 pr-3 tabular-nums">' + formatRpm(r.rpm) + '</td>' +
+            '<td class="py-3 pr-3 tabular-nums">' + formatMoney(r.prog) + '</td>' +
+            '<td class="py-3 pr-3 tabular-nums">' + formatMoney(directMo) + '</td>' +
+            '<td class="py-3 pr-3 tabular-nums font-bold">' + formatMoney(r.total) + '</td>' +
+            '<td class="py-3 tabular-nums">' + formatMoney(r.total * 12) + '</td></tr>';
+        }).join('');
+
+        document.getElementById('formulaNote').textContent =
+          'Programmatic = (traffic ÷ 1000) × blended RPM × densityFactor(' + density + ')=' + baseline.densityFactor.toFixed(2) +
+          ' · deviceMult=' + baseline.deviceMult.toFixed(3) + ' · ±' + UNCERTAINTY_PCT + '% external variance';
+
+        document.getElementById('barScales').innerHTML =
+          renderBarScales(baseline.totalLow, baseline.totalMid, baseline.totalHigh);
+
+        document.getElementById('checklist').innerHTML = buildChecklist(property, niche, mix, density, mobilePct, directMo)
+          .map(function (item) {
+            return '<li class="flex gap-2"><span class="text-accent font-bold">→</span><span>' + item + '</span></li>';
+          }).join('');
+
+        var optimized = null;
+        var deltaAbs = 0;
+        var deltaPct = 0;
+        var optMix = null;
+        var optDensity = null;
+        var optMobile = null;
+
+        if (compareOn) {
+          optMix = readGeoMix('optTier1Pct', 'optTier2Pct', ['optTier1Label', 'optTier2Label', 'optTier3Label']);
+          optDensity = Number(document.getElementById('optDensity').value);
+          optMobile = Number(document.getElementById('optMobileShare').value);
+          document.getElementById('optDensityLabel').textContent = optDensity + ' unit' + (optDensity === 1 ? '' : 's');
+          document.getElementById('optMobileShareLabel').textContent = optMobile + '% mobile';
+
+          optimized = computeScenario(traffic, property, niche, optMix, optMobile, optDensity, directMo);
+          deltaAbs = optimized.totalMid - baseline.totalMid;
+          deltaPct = baseline.totalMid > 0 ? (deltaAbs / baseline.totalMid) * 100 : 0;
+
+          var compareRows = [
+            ['Blended RPM (realistic)', formatRpm(baseline.rpmMid), formatRpm(optimized.rpmMid), formatDelta(optimized.rpmMid - baseline.rpmMid, baseline.rpmMid ? ((optimized.rpmMid - baseline.rpmMid) / baseline.rpmMid * 100) : 0)],
+            ['Programmatic / mo', formatMoney(baseline.progMid), formatMoney(optimized.progMid), formatDelta(optimized.progMid - baseline.progMid, baseline.progMid ? ((optimized.progMid - baseline.progMid) / baseline.progMid * 100) : 0)],
+            ['Total / mo (realistic)', formatMoney(baseline.totalMid), formatMoney(optimized.totalMid), formatDelta(deltaAbs, deltaPct)],
+            ['Total / yr (realistic)', formatMoney(baseline.totalMid * 12), formatMoney(optimized.totalMid * 12), formatDelta((optimized.totalMid - baseline.totalMid) * 12, deltaPct)],
+          ];
+
+          document.getElementById('compareTable').innerHTML = compareRows.map(function (r) {
+            return '<tr><td class="py-3 pr-4 font-medium">' + r[0] + '</td>' +
+              '<td class="py-3 pr-4 tabular-nums">' + r[1] + '</td>' +
+              '<td class="py-3 pr-4 tabular-nums font-bold">' + r[2] + '</td>' +
+              '<td class="py-3 tabular-nums text-accent font-bold">' + r[3] + '</td></tr>';
+          }).join('');
+        }
+
+        lastState = {
+          propertyLabel: PROPERTY_LABEL[property],
+          nicheLabel: isUtility ? 'N/A' : NICHE_LABEL[niche],
+          traffic: traffic, mix: mix, mobilePct: mobilePct, density: density,
+          sponsorship: sponsorship, affiliate: affiliate,
+          directMo: directMo, baseline: baseline, optimized: optimized,
+          compareEnabled: compareOn, deltaAbs: deltaAbs, deltaPct: deltaPct,
+          tierLabel: tier.label, tierDetail: tier.detail,
+          optMix: optMix,
+          optDensity: optDensity,
+          optMobile: optMobile,
+        };
+      }
+
+      function csvCell(val) {
+        var s = val == null ? '' : String(val);
+        if (/[",\r\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+        return s;
+      }
+
+      function csvLine(cells) {
+        return cells.map(csvCell).join(',');
+      }
+
+      function rawUsd(n) {
+        return Math.round(n * 100) / 100;
+      }
+
+      function buildCsvContent() {
+        var s = lastState;
+        if (!s.baseline) return '';
+        var b = s.baseline;
+        var lines = [csvLine(['Section', 'Field', 'Value'])];
+        function row(section, field, value) {
+          lines.push(csvLine([section, field, value]));
+        }
+
+        row('Meta', 'Tool', 'Ad Revenue Potential Estimator');
+        row('Meta', 'Exported At', new Date().toISOString());
+        row('Meta', 'Uncertainty Band', '±' + UNCERTAINTY_PCT + '%');
+
+        row('Inputs', 'Property Type', s.propertyLabel);
+        row('Inputs', 'Primary Niche', s.nicheLabel);
+        row('Inputs', 'Monthly Traffic', s.traffic);
+        row('Inputs', 'Tier 1 Geo %', s.mix[0]);
+        row('Inputs', 'Tier 2 Geo %', s.mix[1]);
+        row('Inputs', 'Tier 3 Geo %', s.mix[2]);
+        row('Inputs', 'Mobile Traffic %', s.mobilePct);
+        row('Inputs', 'Desktop Traffic %', 100 - s.mobilePct);
+        row('Inputs', 'Ad Density (units/page)', s.density);
+        row('Inputs', 'Sponsorships ($/mo)', s.sponsorship);
+        row('Inputs', 'Affiliate ($/mo)', s.affiliate);
+        row('Inputs', 'Direct Revenue Total ($/mo)', rawUsd(s.directMo));
+        row('Inputs', 'Compare Mode Enabled', s.compareEnabled ? 'Yes' : 'No');
+
+        row('Assumptions', 'Density Factor', b.densityFactor);
+        row('Assumptions', 'Device Multiplier', b.deviceMult);
+        row('Assumptions', 'Ad-Block Rate (low scenario)', AD_BLOCK_RATE);
+        row('Assumptions', 'Classification', s.tierLabel);
+
+        row('Scenario', 'Low - RPM', b.rpmLow);
+        row('Scenario', 'Low - Programmatic Monthly ($)', rawUsd(b.progLow));
+        row('Scenario', 'Low - Direct Monthly ($)', rawUsd(b.directMo));
+        row('Scenario', 'Low - Total Monthly ($)', rawUsd(b.totalLow));
+        row('Scenario', 'Low - Total Annual ($)', rawUsd(b.totalLow * 12));
+
+        row('Scenario', 'Realistic - RPM', b.rpmMid);
+        row('Scenario', 'Realistic - Programmatic Monthly ($)', rawUsd(b.progMid));
+        row('Scenario', 'Realistic - Direct Monthly ($)', rawUsd(b.directMo));
+        row('Scenario', 'Realistic - Total Monthly ($)', rawUsd(b.totalMid));
+        row('Scenario', 'Realistic - Total Annual ($)', rawUsd(b.totalMid * 12));
+
+        row('Scenario', 'High - RPM', b.rpmHigh);
+        row('Scenario', 'High - Programmatic Monthly ($)', rawUsd(b.progHigh));
+        row('Scenario', 'High - Direct Monthly ($)', rawUsd(b.directMo));
+        row('Scenario', 'High - Total Monthly ($)', rawUsd(b.totalHigh));
+        row('Scenario', 'High - Total Annual ($)', rawUsd(b.totalHigh * 12));
+
+        if (s.compareEnabled && s.optimized) {
+          var o = s.optimized;
+          row('Compare Inputs', 'Optimized Tier 1 %', s.optMix[0]);
+          row('Compare Inputs', 'Optimized Tier 2 %', s.optMix[1]);
+          row('Compare Inputs', 'Optimized Tier 3 %', s.optMix[2]);
+          row('Compare Inputs', 'Optimized Mobile %', s.optMobile);
+          row('Compare Inputs', 'Optimized Density', s.optDensity);
+
+          row('Compare Baseline', 'RPM (realistic)', b.rpmMid);
+          row('Compare Baseline', 'Programmatic Monthly ($)', rawUsd(b.progMid));
+          row('Compare Baseline', 'Total Monthly ($)', rawUsd(b.totalMid));
+          row('Compare Baseline', 'Total Annual ($)', rawUsd(b.totalMid * 12));
+
+          row('Compare Optimized', 'RPM (realistic)', o.rpmMid);
+          row('Compare Optimized', 'Programmatic Monthly ($)', rawUsd(o.progMid));
+          row('Compare Optimized', 'Total Monthly ($)', rawUsd(o.totalMid));
+          row('Compare Optimized', 'Total Annual ($)', rawUsd(o.totalMid * 12));
+
+          row('Compare Delta', 'RPM Change', rawUsd(o.rpmMid - b.rpmMid));
+          row('Compare Delta', 'Programmatic Monthly Change ($)', rawUsd(o.progMid - b.progMid));
+          row('Compare Delta', 'Total Monthly Change ($)', rawUsd(s.deltaAbs));
+          row('Compare Delta', 'Total Monthly Change (%)', rawUsd(s.deltaPct));
+          row('Compare Delta', 'Total Annual Change ($)', rawUsd(s.deltaAbs * 12));
+        }
+
+        return lines.join('\r\n');
+      }
+
+      function exportCsv() {
+        recalculate();
+        var csv = buildCsvContent();
+        if (!csv) return;
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        var stamp = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = 'ad-revenue-estimate-' + stamp + '.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        var fb = document.getElementById('csvFeedback');
+        fb.classList.remove('hidden');
+        setTimeout(function () { fb.classList.add('hidden'); }, 2500);
+      }
+
+      function clearAllInputs() {
+        document.getElementById('propertyType').value = 'utility';
+        document.getElementById('niche').value = 'tech';
+        document.getElementById('traffic').value = 0;
+        document.getElementById('sponsorship').value = 0;
+        document.getElementById('affiliate').value = 0;
+        document.getElementById('mobileShare').value = 0;
+        document.getElementById('density').value = 1;
+        document.getElementById('compareEnabled').checked = false;
+        setGeoMix('tier1Pct', 'tier2Pct', 0, 0, ['tier1Label', 'tier2Label', 'tier3Label']);
+        setGeoMix('optTier1Pct', 'optTier2Pct', 0, 0, ['optTier1Label', 'optTier2Label', 'optTier3Label']);
+        document.getElementById('optMobileShare').value = 0;
+        document.getElementById('optDensity').value = 1;
+        document.getElementById('optDensityLabel').textContent = '1 unit';
+        document.getElementById('optMobileShareLabel').textContent = '0%';
+        recalculate();
+        var fb = document.getElementById('clearFeedback');
+        fb.classList.remove('hidden');
+        setTimeout(function () { fb.classList.add('hidden'); }, 2000);
+      }
+
+      function initDonateLink() {
+        var url = (PAYPAL_DONATE_URL || '').trim();
+        var section = document.getElementById('donateSection');
+        var link = document.getElementById('donateLink');
+        if (!url) {
+          section.classList.add('hidden');
+          return;
+        }
+        if (!/^https?:\/\//i.test(url)) {
+          url = 'https://' + url.replace(/^\/+/, '');
+        }
+        link.href = url;
+        section.classList.remove('hidden');
+      }
+
+      function bindRecalc(ids) {
+        ids.forEach(function (id) {
+          var el = document.getElementById(id);
+          el.addEventListener('input', recalculate);
+          el.addEventListener('change', recalculate);
+        });
+      }
+
+      bindRecalc([
+        'propertyType', 'niche', 'traffic', 'tier1Pct', 'tier2Pct', 'mobileShare',
+        'density', 'sponsorship', 'affiliate', 'compareEnabled',
+        'optTier1Pct', 'optTier2Pct', 'optMobileShare', 'optDensity',
+      ]);
+
+      document.getElementById('geoPresets').addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-preset]');
+        if (!btn) return;
+        var parts = btn.getAttribute('data-preset').split(',').map(Number);
+        setGeoMix('tier1Pct', 'tier2Pct', parts[0], parts[1], ['tier1Label', 'tier2Label', 'tier3Label']);
+        recalculate();
+      });
+
+      document.getElementById('compareEnabled').addEventListener('change', function () {
+        if (this.checked) {
+          var mix = readGeoMix('tier1Pct', 'tier2Pct', null);
+          var density = Number(document.getElementById('density').value);
+          var mobile = Number(document.getElementById('mobileShare').value);
+          suggestOptimization(mix, density, mobile);
+        }
+        recalculate();
+      });
+
+      document.getElementById('suggestOptBtn').addEventListener('click', function () {
+        var mix = readGeoMix('tier1Pct', 'tier2Pct', null);
+        suggestOptimization(mix, Number(document.getElementById('density').value), Number(document.getElementById('mobileShare').value));
+        recalculate();
+      });
+
+      document.getElementById('clearAllBtn').addEventListener('click', clearAllInputs);
+
+      document.getElementById('exportCsvBtn').addEventListener('click', exportCsv);
+
+      document.getElementById('copySummaryBtn').addEventListener('click', function () {
+        var text = buildSummaryText();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () {
+            var fb = document.getElementById('copyFeedback');
+            fb.classList.remove('hidden');
+            setTimeout(function () { fb.classList.add('hidden'); }, 2500);
+          });
+        } else {
+          window.prompt('Copy this summary:', text);
+        }
+      });
+
+      document.getElementById('propertyType').addEventListener('change', function () {
+        if (this.value === 'mobile') {
+          document.getElementById('mobileShare').value = 85;
+        }
+      });
+
+      initDonateLink();
+      recalculate();
+    })();
+  </script>
+</body>
+</html>
