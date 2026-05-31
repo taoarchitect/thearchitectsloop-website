@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markdown to HTML & PDF Converter | The Architect’s Loop</title>
+  <meta name="description" content="Convert Markdown into clean HTML, printable PDF, plain text, and local note graph views directly in your browser. No upload, no database, no tracking." />
+  <link rel="canonical" href="https://thearchitectsloop.com/markdown-to-html-pdf-converter.html" />
+  <link rel="icon" type="image/png" href="/images/tal favicon.png" />
+  <link rel="shortcut icon" type="image/png" href="/images/tal favicon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The Architect’s Loop" />
+  <meta property="og:title" content="Markdown to HTML & PDF Converter | The Architect’s Loop" />
+  <meta property="og:description" content="Convert Markdown into HTML, printable PDF, plain text, and local note graph views in your browser." />
+  <meta property="og:url" content="https://thearchitectsloop.com/markdown-to-html-pdf-converter.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Markdown to HTML & PDF Converter" />
+  <meta name="twitter:description" content="Convert Markdown into HTML, PDF, and text directly in your browser." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0a0a0a',
+            paper: '#f4f4f0',
+            muted: '#6b6b6b',
+            accent: '#1a56ff',
+            warn: '#b45309',
+            good: '#166534',
+            danger: '#991b1b',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    * { border-radius: 0 !important; }
+    ::selection { background: #1a56ff; color: #f4f4f0; }
+    textarea, input, button, select { border-radius: 0; }
+    textarea { resize: vertical; }
+    .tool-link:focus-visible,
+    .text-link:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: 2px solid #1a56ff;
+      outline-offset: 3px;
+    }
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6b6b6b;
+      border-top: 1px solid rgba(10,10,10,0.15);
+      padding-top: 1.25rem;
+      margin-top: 0.25rem;
+    }
+    .tab-btn[aria-selected='true'] { background: #0a0a0a; color: #f4f4f0; }
+    .prose-output { color: #0a0a0a; }
+    .prose-output h1,
+    .prose-output h2,
+    .prose-output h3,
+    .prose-output h4,
+    .prose-output h5,
+    .prose-output h6 { font-weight: 800; line-height: 1.15; margin: 1.2em 0 0.55em; }
+    .prose-output h1 { font-size: 2rem; border-bottom: 2px solid #0a0a0a; padding-bottom: 0.35rem; }
+    .prose-output h2 { font-size: 1.55rem; border-bottom: 1px solid rgba(10,10,10,0.2); padding-bottom: 0.25rem; }
+    .prose-output h3 { font-size: 1.25rem; }
+    .prose-output h4 { font-size: 1.05rem; }
+    .prose-output p { margin: 0.85rem 0; line-height: 1.72; }
+    .prose-output a { color: #1a56ff; text-decoration: underline; text-underline-offset: 3px; }
+    .prose-output ul,
+    .prose-output ol { margin: 0.85rem 0 0.85rem 1.5rem; line-height: 1.72; }
+    .prose-output ul { list-style: disc; }
+    .prose-output ol { list-style: decimal; }
+    .prose-output li { margin: 0.25rem 0; }
+    .prose-output blockquote { margin: 1rem 0; padding: 0.8rem 1rem; border-left: 4px solid #1a56ff; background: #f4f4f0; font-weight: 600; }
+    .prose-output code { background: #f4f4f0; border: 1px solid rgba(10,10,10,0.18); padding: 0.1rem 0.25rem; font-size: 0.9em; }
+    .prose-output pre { margin: 1rem 0; padding: 1rem; border: 2px solid #0a0a0a; background: #0a0a0a; color: #f4f4f0; overflow-x: auto; }
+    .prose-output pre code { border: 0; background: transparent; color: inherit; padding: 0; }
+    .prose-output table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.92rem; }
+    .prose-output th,
+    .prose-output td { border: 1px solid #0a0a0a; padding: 0.55rem 0.7rem; text-align: left; vertical-align: top; }
+    .prose-output th { background: #0a0a0a; color: #f4f4f0; }
+    .prose-output hr { border: 0; border-top: 2px solid #0a0a0a; margin: 1.5rem 0; }
+    .prose-output img { max-width: 100%; border: 2px solid #0a0a0a; }
+    .code-panel { min-height: 26rem; white-space: pre-wrap; word-break: break-word; }
+    .graph-shell { border: 2px solid #0a0a0a; background: #0d0f14; position: relative; overflow: hidden; }
+    .graph-canvas {
+      width: 100%;
+      height: 36rem;
+      display: block;
+      background:
+        radial-gradient(circle at 50% 45%, rgba(26,86,255,0.16), transparent 28%),
+        radial-gradient(circle at 18% 20%, rgba(244,244,240,0.06), transparent 18%),
+        linear-gradient(135deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 28px),
+        #0d0f14;
+    }
+    .graph-link { stroke: rgba(244,244,240,0.16); stroke-width: 1.15; }
+    .graph-link[data-kind='tag'] { stroke: rgba(26,86,255,0.28); stroke-dasharray: 3 4; }
+    .graph-link[data-kind='mdlink'] { stroke: rgba(244,244,240,0.26); }
+    .graph-node { cursor: pointer; }
+    .graph-node circle { stroke-width: 1.8; transition: r 0.12s ease, opacity 0.12s ease; }
+    .graph-node[data-type='note'] circle { fill: #f4f4f0; stroke: #7aa2ff; }
+    .graph-node[data-type='tag'] circle { fill: #1a56ff; stroke: #b7c8ff; }
+    .graph-node[data-type='missing'] circle { fill: rgba(244,244,240,0.08); stroke: rgba(244,244,240,0.42); stroke-dasharray: 4 3; }
+    .graph-node:hover circle { stroke: #f4f4f0; stroke-width: 2.6; }
+    .graph-node.selected circle { fill: #1a56ff; stroke: #f4f4f0; stroke-width: 3; filter: drop-shadow(0 0 12px rgba(26,86,255,0.72)); }
+    .graph-label { font-size: 11px; font-weight: 700; fill: #f4f4f0; paint-order: stroke; stroke: rgba(13,15,20,0.92); stroke-width: 4px; stroke-linejoin: round; pointer-events: none; }
+    .graph-empty { fill: rgba(244,244,240,0.7); font-size: 13px; font-weight: 700; }
+    .graph-control { border: 1px solid rgba(10,10,10,0.2); background: #f4f4f0; padding: 0.8rem; }
+    .graph-file-btn { width: 100%; text-align: left; border: 1px solid rgba(10,10,10,0.18); background: #ffffff; padding: 0.55rem; cursor: pointer; }
+    .graph-file-btn:hover, .graph-file-btn[aria-current='true'] { border-color: #1a56ff; color: #1a56ff; }
+    .graph-checkbox { display: flex; align-items: center; gap: 0.45rem; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+    @media print {
+      body { background: #ffffff !important; }
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      .print-preview { border: 0 !important; padding: 0 !important; background: #ffffff !important; }
+    }
+  </style>
+</head>
+<body class="bg-paper text-ink antialiased min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
+    <nav class="flex flex-wrap items-center justify-between gap-4 border-b border-ink/20 pb-4 mb-8 no-print" aria-label="Toolkit navigation">
+      <a href="./" class="text-link text-xs font-bold uppercase tracking-[0.2em] hover:text-accent">The Architect’s Loop</a>
+      <div class="flex flex-wrap items-center gap-4 text-[10px] font-bold uppercase tracking-[0.16em] text-muted">
+        <a href="./ad-revenue-estimator.html" class="text-link hover:text-accent">Ad Estimator</a>
+        <a href="./founder-website-visibility-report.html" class="text-link hover:text-accent">Visibility Report</a>
+        <a href="./privacy.html" class="text-link hover:text-accent">Privacy</a>
+      </div>
+    </nav>
+
+    <header class="border-b-2 border-ink pb-6 mb-10">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p class="text-xs uppercase tracking-[0.2em] text-muted mb-2">Client-side only · No upload · No database · No tracking</p>
+          <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">Markdown to HTML &amp; PDF Converter</h1>
+          <p class="mt-3 text-muted max-w-2xl text-sm leading-relaxed">
+            Convert Markdown into clean HTML, printable PDF, plain text, and local note graph views directly in your browser.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2 no-print">
+          <button type="button" id="clearBtn" class="border-2 border-ink bg-paper text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">Clear</button>
+          <button type="button" id="copyHtmlBtn" class="border-2 border-ink bg-paper text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">Copy HTML</button>
+          <button type="button" id="downloadHtmlBtn" class="border-2 border-ink bg-paper text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">Download HTML</button>
+          <button type="button" id="printBtn" class="border-2 border-ink bg-ink text-paper px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-accent hover:border-accent transition-colors">Print / Save PDF</button>
+        </div>
+      </div>
+      <p id="feedback" class="text-xs text-accent mt-2 hidden" role="status">Done.</p>
+    </header>
+
+    <main class="grid lg:grid-cols-2 gap-10 lg:gap-14">
+      <section class="border-2 border-ink p-6 sm:p-8 bg-white no-print" aria-labelledby="input-heading">
+        <h2 id="input-heading" class="text-lg font-bold uppercase tracking-wide mb-6">Markdown Input</h2>
+
+        <form id="converterForm" class="space-y-5" onsubmit="return false;">
+          <div>
+            <label for="documentTitle" class="block text-xs font-bold uppercase tracking-wider mb-2">Document Title</label>
+            <input id="documentTitle" type="text" value="Converted Markdown Document" class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent" />
+          </div>
+
+          <div>
+            <label for="markdownFile" class="block text-xs font-bold uppercase tracking-wider mb-2">Upload .md File</label>
+            <input id="markdownFile" type="file" accept=".md,.markdown,.txt,text/markdown,text/plain" class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium" />
+            <p class="mt-2 text-[10px] uppercase tracking-wide text-muted">The file is read locally by your browser. It is not uploaded.</p>
+          </div>
+
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <label for="markdownInput" class="block text-xs font-bold uppercase tracking-wider">Paste Markdown</label>
+              <button type="button" id="loadSampleBtn" class="border border-ink bg-paper px-2 py-1 text-[10px] font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">Load Sample</button>
+            </div>
+            <textarea id="markdownInput" rows="22" spellcheck="false" class="w-full border-2 border-ink bg-paper px-3 py-3 font-mono text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-accent"></textarea>
+          </div>
+
+          <p class="section-label">Export Options</p>
+
+          <div class="grid sm:grid-cols-2 gap-3 text-sm">
+            <label class="flex items-center gap-2 cursor-pointer"><input id="includeCss" type="checkbox" class="w-4 h-4 accent-accent" checked /> Include clean HTML styling</label>
+            <label class="flex items-center gap-2 cursor-pointer"><input id="openLinksNewTab" type="checkbox" class="w-4 h-4 accent-accent" checked /> Open links in new tab</label>
+            <label class="flex items-center gap-2 cursor-pointer"><input id="headingAnchors" type="checkbox" class="w-4 h-4 accent-accent" checked /> Add heading IDs</label>
+            <label class="flex items-center gap-2 cursor-pointer"><input id="strictEscape" type="checkbox" class="w-4 h-4 accent-accent" checked /> Escape raw HTML</label>
+          </div>
+
+          <p class="section-label">Document Stats</p>
+          <div id="statsPanel" class="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm"></div>
+        </form>
+
+        <aside class="mt-8 pt-6 border-t border-ink/20 text-xs text-muted leading-relaxed space-y-3">
+          <p><strong class="text-ink">PDF export:</strong> The PDF button opens a print-ready version. Choose “Save as PDF” in your browser print dialog.</p>
+          <p><strong class="text-ink">Markdown support:</strong> Headings, paragraphs, links, images, bold, italic, code blocks, blockquotes, lists, horizontal rules, tables, wikilinks, and tags.</p>
+        </aside>
+      </section>
+
+      <section class="flex flex-col gap-6" aria-live="polite">
+        <div class="border-2 border-ink p-6 sm:p-8 bg-ink text-paper no-print">
+          <h2 class="text-xs uppercase tracking-[0.2em] text-paper/60 mb-2">Converter Summary</h2>
+          <p id="summaryTitle" class="text-2xl font-bold tracking-tight">Ready to convert.</p>
+          <p id="summaryDetail" class="mt-2 text-sm text-paper/75 leading-relaxed">Paste Markdown or upload a .md file to generate HTML, text, and print-ready output.</p>
+        </div>
+
+        <div class="border-2 border-ink bg-white no-print">
+          <div class="flex flex-wrap border-b-2 border-ink" role="tablist" aria-label="Output views">
+            <button type="button" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-wider border-r border-ink" data-tab="preview" aria-selected="true">Preview</button>
+            <button type="button" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-wider border-r border-ink" data-tab="html" aria-selected="false">HTML</button>
+            <button type="button" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-wider" data-tab="text" aria-selected="false">Text</button>
+          </div>
+
+          <div id="previewPanel" class="p-6 sm:p-8 min-h-[28rem] max-h-[44rem] overflow-auto">
+            <div id="previewOutput" class="prose-output"></div>
+          </div>
+          <pre id="htmlPanel" class="hidden p-6 sm:p-8 bg-paper text-xs leading-relaxed code-panel overflow-auto"></pre>
+          <pre id="textPanel" class="hidden p-6 sm:p-8 bg-paper text-xs leading-relaxed code-panel overflow-auto"></pre>
+        </div>
+
+        <div class="border-2 border-ink p-6 sm:p-8 bg-white no-print">
+          <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+            <div>
+              <h2 class="text-lg font-bold uppercase tracking-wide">Quick Actions</h2>
+              <p class="mt-2 text-sm text-muted leading-relaxed">Download or copy the converted output without leaving the page.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" id="downloadTxtBtn" class="border-2 border-ink bg-paper text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">Download TXT</button>
+              <button type="button" id="copyTextBtn" class="border-2 border-ink bg-paper text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">Copy Text</button>
+            </div>
+          </div>
+          <p class="text-xs text-muted leading-relaxed">For DOCX or advanced PDF layout, a future version can add deeper export formatting. This first version stays reliable and fully client-side.</p>
+        </div>
+      </section>
+    </main>
+
+    <section class="mt-12 border-2 border-ink bg-white p-6 sm:p-8 no-print" aria-labelledby="graph-heading">
+      <div class="flex flex-wrap items-start justify-between gap-4 border-b border-ink/20 pb-6 mb-6">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Optional Local Graph View</p>
+          <h2 id="graph-heading" class="mt-2 text-2xl font-bold tracking-tight">Markdown Knowledge Graph</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+            Upload multiple Markdown notes to map wikilinks, .md links, and tags. This is a lightweight Obsidian-inspired local graph that runs in your browser.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" id="loadGraphSampleBtn" class="border-2 border-ink bg-paper text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">Sample Graph</button>
+          <button type="button" id="resetGraphViewBtn" class="border-2 border-ink bg-paper text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">Reset View</button>
+          <button type="button" id="clearGraphBtn" class="border-2 border-ink bg-paper text-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper transition-colors">Clear Graph</button>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-[22rem_1fr] gap-6">
+        <div class="space-y-5">
+          <div>
+            <label for="graphFiles" class="block text-xs font-bold uppercase tracking-wider mb-2">Upload Multiple .md Files</label>
+            <input id="graphFiles" type="file" accept=".md,.markdown,.txt,text/markdown,text/plain" multiple class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium" />
+          </div>
+
+          <div class="graph-control space-y-3">
+            <div>
+              <label for="graphViewMode" class="block text-[10px] font-bold uppercase tracking-wider mb-2">View Mode</label>
+              <select id="graphViewMode" class="w-full border-2 border-ink bg-white px-3 py-2 text-sm font-medium">
+                <option value="focus" selected>Focus view — selected note + neighbors</option>
+                <option value="global">Global map — full visible network</option>
+              </select>
+            </div>
+            <div>
+              <label for="graphSearch" class="block text-[10px] font-bold uppercase tracking-wider mb-2">Search / Focus Node</label>
+              <input id="graphSearch" type="search" placeholder="Type note, tag, or link name" class="w-full border-2 border-ink bg-white px-3 py-2 text-sm font-medium" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="graph-checkbox"><input id="graphShowMissing" type="checkbox" checked /> Missing</label>
+              <label class="graph-checkbox"><input id="graphShowTags" type="checkbox" /> Tags</label>
+              <label class="graph-checkbox"><input id="graphShowLabels" type="checkbox" /> Labels</label>
+              <label class="graph-checkbox"><input id="graphGlobalLinks" type="checkbox" checked /> Links</label>
+            </div>
+            <div>
+              <div class="flex justify-between text-[10px] font-bold uppercase tracking-wider mb-1">
+                <label for="graphMaxNodes">Max visible nodes</label>
+                <span id="graphMaxNodesLabel">80</span>
+              </div>
+              <input id="graphMaxNodes" type="range" min="20" max="180" step="10" value="80" />
+            </div>
+            <p class="text-xs leading-relaxed text-muted">
+              Tip: Use Focus view first. Turn labels on only when the graph is small.
+            </p>
+          </div>
+
+          <div id="graphStats" class="grid grid-cols-2 gap-3 text-sm"></div>
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider border-b border-ink/20 pb-2 mb-3">Selected Node</h3>
+            <p id="nodeDetail" class="text-sm text-muted leading-relaxed">Click a graph node or file name to inspect its local relationships.</p>
+          </div>
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider border-b border-ink/20 pb-2 mb-3">Detected Files</h3>
+            <ul id="fileList" class="text-sm space-y-2 max-h-60 overflow-auto"></ul>
+          </div>
+        </div>
+        <div class="graph-shell">
+          <svg id="graphSvg" class="graph-canvas" role="img" aria-label="Markdown note graph"></svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-12 border-t border-ink/20 pt-10 no-print" aria-labelledby="about-heading">
+      <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-muted">About This Tool</p>
+      <h2 id="about-heading" class="mt-2 text-2xl font-bold tracking-tight">A private Markdown conversion utility for creators and founders</h2>
+      <div class="mt-6 grid gap-6 text-sm leading-relaxed text-muted md:grid-cols-3">
+        <div>
+          <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-ink">What it converts</h3>
+          <p>Paste or upload Markdown, then convert it into clean HTML, readable plain text, and print-ready output for browser PDF saving.</p>
+        </div>
+        <div>
+          <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-ink">Who it helps</h3>
+          <p>Useful for Obsidian notes, documentation drafts, website copy, Payhip product descriptions, SEO article drafts, and reusable content blocks.</p>
+        </div>
+        <div>
+          <h3 class="mb-2 text-xs font-bold uppercase tracking-wider text-ink">Important limitation</h3>
+          <p>The converter is intentionally lightweight. It is not a full publishing platform, cloud editor, or exact clone of Obsidian’s graph engine.</p>
+        </div>
+      </div>
+      <div class="mt-8 border-2 border-ink bg-white p-6">
+        <h3 class="text-sm font-bold uppercase tracking-wide">Frequently asked questions</h3>
+        <div class="mt-4 space-y-4 text-sm leading-relaxed">
+          <div>
+            <p class="font-bold text-ink">Does this upload my Markdown files?</p>
+            <p class="mt-1 text-muted">No. Files are read by your browser. The current tool does not send Markdown text to a database or server-side converter.</p>
+          </div>
+          <div>
+            <p class="font-bold text-ink">Is the PDF generated automatically?</p>
+            <p class="mt-1 text-muted">The tool creates a print-ready page. Your browser handles the final “Save as PDF” step.</p>
+          </div>
+          <div>
+            <p class="font-bold text-ink">Is the graph view the same as Obsidian?</p>
+            <p class="mt-1 text-muted">No. It is a simple local relationship map for Markdown files, wikilinks, .md links, and tags.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="printDocument" class="hidden print-only print-preview">
+      <div id="printOutput" class="prose-output"></div>
+    </section>
+
+    <footer class="mt-12 pt-6 border-t border-ink/20 text-xs text-muted space-y-4 no-print">
+      <p>All conversion runs in browser memory. No form submission or analytics. Tailwind CSS loads from CDN for styling only.</p>
+      <div id="donateSection" class="hidden pt-2 border-t border-ink/10">
+        <p class="text-ink font-bold uppercase tracking-wider text-[10px] mb-2">Support this tool</p>
+        <p class="mb-2">If this converter helped you, optional tips are appreciated.</p>
+        <a id="donateLink" href="#" target="_blank" rel="noopener noreferrer" class="inline-block border-2 border-ink bg-ink text-paper px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-accent hover:border-accent transition-colors">Donate via PayPal</a>
+      </div>
+      <div class="pt-4 border-t border-ink/10 text-center space-y-2">
+        <p class="text-xs font-medium text-ink">A tool by The Architect’s Loop</p>
+        <p class="text-[10px] text-muted">Contact: <a href="mailto:thearchitectsloop@proton.me" class="text-link hover:text-accent underline underline-offset-2">thearchitectsloop@proton.me</a></p>
+        <nav aria-label="Legal links" class="text-[10px] text-muted">
+          <a href="./privacy.html" class="text-link hover:text-accent underline underline-offset-2">Privacy</a>
+          <span aria-hidden="true"> · </span>
+          <a href="./disclaimer.html" class="text-link hover:text-accent underline underline-offset-2">Disclaimer</a>
+        </nav>
+        <p class="text-[10px] text-muted">© 2026 The Architect’s Loop. Built by Tun Bakyu.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var PAYPAL_DONATE_URL = 'https://paypal.me/tunbakyu';
+      var state = {
+        html: '',
+        fullHtml: '',
+        text: '',
+        activeTab: 'preview',
+        graph: { nodes: [], links: [], files: [] },
+        graphSelected: '',
+      };
+
+      var sampleMarkdown = '# Markdown Conversion Sample\n\nThis tool converts **Markdown** into clean HTML, text, and a print-ready PDF page.\n\n## What you can export\n\n- HTML file\n- Plain text file\n- Browser PDF using print\n- Copy-ready HTML\n\n## Example table\n\n| Format | Use case |\n| --- | --- |\n| HTML | Website page or product description |\n| PDF | Printable document |\n| TXT | Clean plain text |\n\n## Graph links\n\nThis note can link to [[Product Ideas]] and [[Website Tools]].\n\nTags: #markdown #client-side #thearchitectsloop\n\n> Privacy note: the file stays in your browser.\n\n```js\nconsole.log("Converted locally");\n```\n';
+
+      function byId(id) { return document.getElementById(id); }
+
+      function escapeHtml(str) {
+        if (!byId('strictEscape') || !byId('strictEscape').checked) return String(str || '');
+        return String(str || '').replace(/[&<>"']/g, function (m) {
+          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m];
+        });
+      }
+
+      function escapeAlways(str) {
+        return String(str || '').replace(/[&<>"']/g, function (m) {
+          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m];
+        });
+      }
+
+      function slugify(text) {
+        return String(text || '')
+          .toLowerCase()
+          .replace(/<[^>]+>/g, '')
+          .replace(/[^a-z0-9\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-') || 'section';
+      }
+
+      function splitTableRow(line) {
+        var trimmed = line.trim();
+        if (trimmed[0] === '|') trimmed = trimmed.slice(1);
+        if (trimmed[trimmed.length - 1] === '|') trimmed = trimmed.slice(0, -1);
+        return trimmed.split('|').map(function (cell) { return cell.trim(); });
+      }
+
+      function isTableDivider(line) {
+        return /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(line);
+      }
+
+      function inlineFormat(text) {
+        var codeParts = [];
+        var safe = escapeHtml(text).replace(/`([^`]+)`/g, function (_, code) {
+          codeParts.push('<code>' + escapeAlways(code) + '</code>');
+          return '%%CODE' + (codeParts.length - 1) + '%%';
+        });
+
+        safe = safe
+          .replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]+)")?\)/g, function (_, alt, src, title) {
+            return '<img src="' + escapeAlways(src) + '" alt="' + escapeAlways(alt) + '"' + (title ? ' title="' + escapeAlways(title) + '"' : '') + ' />';
+          })
+          .replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]+)")?\)/g, function (_, label, href, title) {
+            var target = byId('openLinksNewTab').checked ? ' target="_blank" rel="noopener noreferrer"' : '';
+            return '<a href="' + escapeAlways(href) + '"' + target + (title ? ' title="' + escapeAlways(title) + '"' : '') + '>' + label + '</a>';
+          })
+          .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, function (_, target, label) {
+            var display = label || target;
+            return '<a href="#' + slugify(target) + '" data-wikilink="' + escapeAlways(target) + '">' + escapeAlways(display) + '</a>';
+          })
+          .replace(/~~([^~]+)~~/g, '<del>$1</del>')
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/__([^_]+)__/g, '<strong>$1</strong>')
+          .replace(/(^|\s)\*([^*\n]+)\*/g, '$1<em>$2</em>')
+          .replace(/(^|\s)_([^_\n]+)_/g, '$1<em>$2</em>')
+          .replace(/(^|\s)#([A-Za-z0-9_\-/]+)/g, '$1<a href="#tag-$2" class="tag-link">#$2</a>');
+
+        return safe.replace(/%%CODE(\d+)%%/g, function (_, index) { return codeParts[Number(index)]; });
+      }
+
+      function parseMarkdown(md) {
+        var lines = String(md || '').replace(/\r\n?/g, '\n').split('\n');
+        var html = [];
+        var paragraph = [];
+        var list = null;
+        var blockquote = [];
+        var codeBlock = null;
+
+        function flushParagraph() {
+          if (!paragraph.length) return;
+          html.push('<p>' + inlineFormat(paragraph.join(' ')) + '</p>');
+          paragraph = [];
+        }
+        function flushList() {
+          if (!list) return;
+          html.push('<' + list.type + '>' + list.items.map(function (item) { return '<li>' + inlineFormat(item) + '</li>'; }).join('') + '</' + list.type + '>');
+          list = null;
+        }
+        function flushBlockquote() {
+          if (!blockquote.length) return;
+          html.push('<blockquote>' + blockquote.map(function (line) { return '<p>' + inlineFormat(line) + '</p>'; }).join('') + '</blockquote>');
+          blockquote = [];
+        }
+        function closeBlocks() { flushParagraph(); flushList(); flushBlockquote(); }
+
+        for (var i = 0; i < lines.length; i += 1) {
+          var line = lines[i];
+          var fence = line.match(/^\s*```\s*([A-Za-z0-9_-]+)?\s*$/);
+          if (fence) {
+            if (codeBlock) {
+              html.push('<pre><code>' + escapeAlways(codeBlock.lines.join('\n')) + '</code></pre>');
+              codeBlock = null;
+            } else {
+              closeBlocks();
+              codeBlock = { lang: fence[1] || '', lines: [] };
+            }
+            continue;
+          }
+          if (codeBlock) {
+            codeBlock.lines.push(line);
+            continue;
+          }
+
+          if (/^\s*$/.test(line)) {
+            closeBlocks();
+            continue;
+          }
+
+          var heading = line.match(/^\s{0,3}(#{1,6})\s+(.+?)\s*#*\s*$/);
+          if (heading) {
+            closeBlocks();
+            var level = heading[1].length;
+            var headingText = inlineFormat(heading[2]);
+            var idAttr = byId('headingAnchors').checked ? ' id="' + slugify(heading[2]) + '"' : '';
+            html.push('<h' + level + idAttr + '>' + headingText + '</h' + level + '>');
+            continue;
+          }
+
+          if (/^\s{0,3}(-{3,}|\*{3,}|_{3,})\s*$/.test(line)) {
+            closeBlocks();
+            html.push('<hr />');
+            continue;
+          }
+
+          if (/^\s*>\s?/.test(line)) {
+            flushParagraph();
+            flushList();
+            blockquote.push(line.replace(/^\s*>\s?/, ''));
+            continue;
+          }
+
+          if (line.indexOf('|') !== -1 && i + 1 < lines.length && isTableDivider(lines[i + 1])) {
+            closeBlocks();
+            var headers = splitTableRow(line);
+            i += 2;
+            var rows = [];
+            while (i < lines.length && lines[i].indexOf('|') !== -1 && !/^\s*$/.test(lines[i])) {
+              rows.push(splitTableRow(lines[i]));
+              i += 1;
+            }
+            i -= 1;
+            html.push('<table><thead><tr>' + headers.map(function (cell) { return '<th>' + inlineFormat(cell) + '</th>'; }).join('') + '</tr></thead><tbody>' + rows.map(function (row) {
+              return '<tr>' + row.map(function (cell) { return '<td>' + inlineFormat(cell) + '</td>'; }).join('') + '</tr>';
+            }).join('') + '</tbody></table>');
+            continue;
+          }
+
+          var unordered = line.match(/^\s*[-*+]\s+(.+)$/);
+          var ordered = line.match(/^\s*\d+\.\s+(.+)$/);
+          if (unordered || ordered) {
+            flushParagraph();
+            flushBlockquote();
+            var type = unordered ? 'ul' : 'ol';
+            if (!list || list.type !== type) flushList();
+            if (!list) list = { type: type, items: [] };
+            list.items.push((unordered || ordered)[1]);
+            continue;
+          }
+
+          flushList();
+          flushBlockquote();
+          paragraph.push(line.trim());
+        }
+
+        if (codeBlock) html.push('<pre><code>' + escapeAlways(codeBlock.lines.join('\n')) + '</code></pre>');
+        closeBlocks();
+        return html.join('\n');
+      }
+
+      function markdownToText(md) {
+        return String(md || '')
+          .replace(/```[\s\S]*?```/g, function (m) { return m.replace(/```[A-Za-z0-9_-]*\n?|```/g, ''); })
+          .replace(/^\s{0,3}#{1,6}\s+/gm, '')
+          .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+          .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, function (_, target, label) { return label || target; })
+          .replace(/[*_~`>#-]/g, '')
+          .replace(/\n{3,}/g, '\n\n')
+          .trim();
+      }
+
+      function buildFullHtml(fragment, title) {
+        var css = byId('includeCss').checked ? '\n  <style>\n    body{font-family:Arial,sans-serif;line-height:1.65;color:#0a0a0a;max-width:840px;margin:40px auto;padding:0 20px;}\n    h1,h2,h3,h4,h5,h6{line-height:1.15;margin:1.2em 0 .55em;}\n    h1{font-size:2rem;border-bottom:2px solid #0a0a0a;padding-bottom:.35rem;}\n    h2{font-size:1.55rem;border-bottom:1px solid #ddd;padding-bottom:.25rem;}\n    a{color:#1a56ff;text-decoration:underline;text-underline-offset:3px;}\n    blockquote{border-left:4px solid #1a56ff;background:#f4f4f0;margin:1rem 0;padding:.8rem 1rem;font-weight:600;}\n    code{background:#f4f4f0;border:1px solid #ddd;padding:.1rem .25rem;}\n    pre{background:#0a0a0a;color:#f4f4f0;padding:1rem;overflow-x:auto;}\n    pre code{background:transparent;border:0;padding:0;}\n    table{width:100%;border-collapse:collapse;margin:1rem 0;}\n    th,td{border:1px solid #0a0a0a;padding:.55rem .7rem;text-align:left;vertical-align:top;}\n    th{background:#0a0a0a;color:#f4f4f0;}\n    img{max-width:100%;}\n  </style>' : '';
+        return '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8" />\n  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n  <title>' + escapeAlways(title) + '</title>' + css + '\n</head>\n<body>\n' + fragment + '\n</body>\n</html>';
+      }
+
+      function countMatches(text, regex) {
+        var m = String(text || '').match(regex);
+        return m ? m.length : 0;
+      }
+
+      function updateStats(md, text, html) {
+        var words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+        var rows = [
+          ['Words', words.toLocaleString('en-US')],
+          ['Reading time', Math.max(1, Math.ceil(words / 200)) + ' min'],
+          ['Characters', String(md || '').length.toLocaleString('en-US')],
+          ['Headings', countMatches(md, /^\s{0,3}#{1,6}\s+/gm).toLocaleString('en-US')],
+          ['Links', (countMatches(md, /\[[^\]]+\]\([^)]+\)/g) + countMatches(md, /\[\[[^\]]+\]\]/g)).toLocaleString('en-US')],
+          ['HTML size', html.length.toLocaleString('en-US') + ' chars'],
+        ];
+        byId('statsPanel').innerHTML = rows.map(function (r) {
+          return '<div><dt class="text-muted text-xs uppercase tracking-wide">' + r[0] + '</dt><dd class="font-medium mt-0.5">' + r[1] + '</dd></div>';
+        }).join('');
+        byId('summaryTitle').textContent = words ? 'Converted ' + words.toLocaleString('en-US') + ' words.' : 'Ready to convert.';
+        byId('summaryDetail').textContent = words ? 'Preview, HTML, plain text, and print-ready output are available below.' : 'Paste Markdown or upload a .md file to generate HTML, text, and print-ready output.';
+      }
+
+      function recalculate() {
+        var md = byId('markdownInput').value;
+        var title = byId('documentTitle').value.trim() || 'Converted Markdown Document';
+        var fragment = parseMarkdown(md);
+        var text = markdownToText(md);
+        var fullHtml = buildFullHtml(fragment, title);
+        state.html = fragment;
+        state.fullHtml = fullHtml;
+        state.text = text;
+        byId('previewOutput').innerHTML = fragment || '<p class="text-muted">Your converted preview will appear here.</p>';
+        byId('printOutput').innerHTML = fragment;
+        byId('htmlPanel').textContent = fullHtml;
+        byId('textPanel').textContent = text;
+        updateStats(md, text, fullHtml);
+      }
+
+      function showFeedback(message) {
+        var fb = byId('feedback');
+        fb.textContent = message;
+        fb.classList.remove('hidden');
+        setTimeout(function () { fb.classList.add('hidden'); }, 2200);
+      }
+
+      function downloadFile(filename, content, type) {
+        var blob = new Blob([content], { type: type });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      function safeFilename(title, ext) {
+        var base = String(title || 'converted-markdown').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'converted-markdown';
+        return base + ext;
+      }
+
+      function copyToClipboard(text, message) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { showFeedback(message); });
+        } else {
+          window.prompt('Copy this:', text);
+        }
+      }
+
+      function setActiveTab(tab) {
+        state.activeTab = tab;
+        Array.prototype.forEach.call(document.querySelectorAll('.tab-btn'), function (btn) {
+          btn.setAttribute('aria-selected', btn.getAttribute('data-tab') === tab ? 'true' : 'false');
+        });
+        byId('previewPanel').classList.toggle('hidden', tab !== 'preview');
+        byId('htmlPanel').classList.toggle('hidden', tab !== 'html');
+        byId('textPanel').classList.toggle('hidden', tab !== 'text');
+      }
+
+      function extractBaseName(filename) {
+        return String(filename || '').replace(/\.(md|markdown|txt)$/i, '').trim();
+      }
+
+      function extractGraph(files) {
+        var nodes = {};
+        var links = [];
+        function ensure(id, type) {
+          id = String(id || '').trim();
+          if (!id) return null;
+          if (!nodes[id]) nodes[id] = { id: id, type: type || 'note', count: 0, degree: 0 };
+          if (type === 'note') nodes[id].type = 'note';
+          nodes[id].count += 1;
+          return nodes[id];
+        }
+        function noteExists(target) {
+          return files.some(function (f) { return f.name.toLowerCase() === String(target || '').toLowerCase(); });
+        }
+        files.forEach(function (file) { ensure(file.name, 'note'); });
+        files.forEach(function (file) {
+          var content = file.content || '';
+          var wikilinks = content.match(/\[\[([^\]|]+)(?:\|[^\]]+)?\]\]/g) || [];
+          wikilinks.forEach(function (raw) {
+            var target = raw.replace(/^\[\[/, '').replace(/\]\]$/, '').split('|')[0].trim();
+            ensure(target, noteExists(target) ? 'note' : 'missing');
+            links.push({ source: file.name, target: target, kind: 'wikilink' });
+          });
+          var mdLinks = content.match(/\[[^\]]+\]\(([^)]+\.md)\)/gi) || [];
+          mdLinks.forEach(function (raw) {
+            var m = raw.match(/\(([^)]+\.md)\)/i);
+            var target = extractBaseName(m ? m[1].split('/').pop() : 'Linked Note');
+            ensure(target, noteExists(target) ? 'note' : 'missing');
+            links.push({ source: file.name, target: target, kind: 'mdlink' });
+          });
+          var tags = content.match(/(^|\s)#([A-Za-z0-9_\-/]+)/g) || [];
+          tags.forEach(function (raw) {
+            var tag = '#' + raw.trim().replace(/^#?/, '').replace(/^\s*#/, '');
+            ensure(tag, 'tag');
+            links.push({ source: file.name, target: tag, kind: 'tag' });
+          });
+        });
+        links.forEach(function (link) {
+          if (nodes[link.source]) nodes[link.source].degree += 1;
+          if (nodes[link.target]) nodes[link.target].degree += 1;
+        });
+        return { nodes: Object.keys(nodes).map(function (k) { return nodes[k]; }), links: links, files: files };
+      }
+
+      function readGraphSettings() {
+        return {
+          mode: byId('graphViewMode') ? byId('graphViewMode').value : 'focus',
+          search: byId('graphSearch') ? String(byId('graphSearch').value || '').trim().toLowerCase() : '',
+          showMissing: byId('graphShowMissing') ? byId('graphShowMissing').checked : true,
+          showTags: byId('graphShowTags') ? byId('graphShowTags').checked : false,
+          showLabels: byId('graphShowLabels') ? byId('graphShowLabels').checked : false,
+          showLinks: byId('graphGlobalLinks') ? byId('graphGlobalLinks').checked : true,
+          maxNodes: byId('graphMaxNodes') ? Number(byId('graphMaxNodes').value || 80) : 80,
+        };
+      }
+
+      function nodeAllowedByType(node, settings) {
+        if (!node) return false;
+        if (node.type === 'tag' && !settings.showTags) return false;
+        if (node.type === 'missing' && !settings.showMissing) return false;
+        return true;
+      }
+
+      function getNodeMap(nodes) {
+        var map = {};
+        nodes.forEach(function (n) { map[n.id] = n; });
+        return map;
+      }
+
+      function chooseSelectedNode(graph, settings) {
+        var nodes = graph.nodes || [];
+        if (!nodes.length) return '';
+        if (settings.search) {
+          var exact = nodes.find(function (n) { return n.id.toLowerCase() === settings.search; });
+          if (exact) return exact.id;
+          var partial = nodes
+            .filter(function (n) { return n.id.toLowerCase().indexOf(settings.search) !== -1; })
+            .sort(function (a, b) { return (b.type === 'note') - (a.type === 'note') || b.degree - a.degree; })[0];
+          if (partial) return partial.id;
+        }
+        if (state.graphSelected && nodes.some(function (n) { return n.id === state.graphSelected; })) return state.graphSelected;
+        var bestNote = nodes.filter(function (n) { return n.type === 'note'; }).sort(function (a, b) { return b.degree - a.degree; })[0];
+        return bestNote ? bestNote.id : nodes[0].id;
+      }
+
+      function getVisibleGraph(graph, settings) {
+        var allNodes = graph.nodes.slice();
+        var nodeMap = getNodeMap(allNodes);
+        var selectedId = chooseSelectedNode(graph, settings);
+        var keep = {};
+        var visibleLinks = [];
+
+        if (settings.mode === 'focus' && selectedId) {
+          keep[selectedId] = true;
+          graph.links.forEach(function (link) {
+            if (link.source === selectedId || link.target === selectedId) {
+              var otherId = link.source === selectedId ? link.target : link.source;
+              var other = nodeMap[otherId];
+              if (nodeAllowedByType(other, settings)) {
+                keep[otherId] = true;
+                visibleLinks.push(link);
+              }
+            }
+          });
+          if (Object.keys(keep).length === 1) {
+            allNodes.filter(function (n) { return nodeAllowedByType(n, settings) && n.type === 'note'; }).slice(0, settings.maxNodes).forEach(function (n) { keep[n.id] = true; });
+          }
+        } else {
+          allNodes.filter(function (n) { return nodeAllowedByType(n, settings); })
+            .sort(function (a, b) {
+              var typeScore = { note: 3, tag: 2, missing: 1 };
+              return (typeScore[b.type] || 0) - (typeScore[a.type] || 0) || b.degree - a.degree || a.id.localeCompare(b.id);
+            })
+            .slice(0, settings.maxNodes)
+            .forEach(function (n) { keep[n.id] = true; });
+          visibleLinks = graph.links.filter(function (link) { return keep[link.source] && keep[link.target]; });
+        }
+
+        var nodes = allNodes.filter(function (n) { return keep[n.id]; });
+        if (nodes.length > settings.maxNodes) {
+          var selected = nodes.filter(function (n) { return n.id === selectedId; });
+          var rest = nodes.filter(function (n) { return n.id !== selectedId; })
+            .sort(function (a, b) { return b.degree - a.degree || a.id.localeCompare(b.id); })
+            .slice(0, Math.max(0, settings.maxNodes - selected.length));
+          nodes = selected.concat(rest);
+          keep = {};
+          nodes.forEach(function (n) { keep[n.id] = true; });
+          visibleLinks = visibleLinks.filter(function (link) { return keep[link.source] && keep[link.target]; });
+        }
+        if (!settings.showLinks) visibleLinks = [];
+        return { nodes: nodes, links: visibleLinks, selectedId: selectedId };
+      }
+
+      function hashNumber(str) {
+        var h = 0;
+        for (var i = 0; i < String(str).length; i += 1) h = ((h << 5) - h + String(str).charCodeAt(i)) | 0;
+        return Math.abs(h);
+      }
+
+      function layoutGraph(nodes, links, selectedId, width, height, mode) {
+        var cx = width / 2;
+        var cy = height / 2;
+        var nodeMap = getNodeMap(nodes);
+        var radius = Math.max(90, Math.min(width, height) * 0.34);
+        nodes.forEach(function (node, i) {
+          var seed = hashNumber(node.id);
+          var angle = ((seed % 360) / 360) * Math.PI * 2;
+          var layer = node.type === 'note' ? 0.58 : node.type === 'tag' ? 0.76 : 0.92;
+          if (node.id === selectedId && mode === 'focus') {
+            node.x = cx;
+            node.y = cy;
+          } else if (mode === 'focus') {
+            var ringIndex = i || 1;
+            angle = (Math.PI * 2 * ringIndex) / Math.max(2, nodes.length - 1) - Math.PI / 2;
+            node.x = cx + Math.cos(angle) * radius * layer;
+            node.y = cy + Math.sin(angle) * radius * layer;
+          } else {
+            node.x = cx + Math.cos(angle) * radius * (0.35 + (seed % 60) / 100);
+            node.y = cy + Math.sin(angle) * radius * (0.35 + ((seed >> 3) % 60) / 100);
+          }
+          node.vx = 0;
+          node.vy = 0;
+        });
+
+        for (var tick = 0; tick < 170; tick += 1) {
+          for (var a = 0; a < nodes.length; a += 1) {
+            for (var b = a + 1; b < nodes.length; b += 1) {
+              var n1 = nodes[a];
+              var n2 = nodes[b];
+              var dx = n2.x - n1.x;
+              var dy = n2.y - n1.y;
+              var dist2 = dx * dx + dy * dy || 1;
+              var dist = Math.sqrt(dist2);
+              var force = Math.min(1600 / dist2, 1.2);
+              var fx = (dx / dist) * force;
+              var fy = (dy / dist) * force;
+              n1.vx -= fx; n1.vy -= fy;
+              n2.vx += fx; n2.vy += fy;
+            }
+          }
+          links.forEach(function (link) {
+            var s = nodeMap[link.source];
+            var t = nodeMap[link.target];
+            if (!s || !t) return;
+            var dx = t.x - s.x;
+            var dy = t.y - s.y;
+            var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            var target = link.kind === 'tag' ? 76 : link.kind === 'mdlink' ? 98 : 112;
+            var strength = link.kind === 'tag' ? 0.018 : 0.026;
+            var pull = (dist - target) * strength;
+            var fx = (dx / dist) * pull;
+            var fy = (dy / dist) * pull;
+            if (s.id !== selectedId || mode !== 'focus') { s.vx += fx; s.vy += fy; }
+            if (t.id !== selectedId || mode !== 'focus') { t.vx -= fx; t.vy -= fy; }
+          });
+          nodes.forEach(function (node) {
+            var centering = node.id === selectedId && mode === 'focus' ? 0.12 : 0.006;
+            node.vx += (cx - node.x) * centering;
+            node.vy += (cy - node.y) * centering;
+            node.vx *= 0.82;
+            node.vy *= 0.82;
+            if (node.id !== selectedId || mode !== 'focus') {
+              node.x += node.vx;
+              node.y += node.vy;
+            } else {
+              node.x = cx; node.y = cy;
+            }
+            node.x = Math.max(26, Math.min(width - 26, node.x));
+            node.y = Math.max(26, Math.min(height - 26, node.y));
+          });
+        }
+      }
+
+      function createSvgEl(name) {
+        return document.createElementNS('http://www.w3.org/2000/svg', name);
+      }
+
+      function renderGraph(graph) {
+        var svg = byId('graphSvg');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        var width = svg.clientWidth || 900;
+        var height = svg.clientHeight || 576;
+        svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+        svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        var settings = readGraphSettings();
+        if (byId('graphMaxNodesLabel')) byId('graphMaxNodesLabel').textContent = String(settings.maxNodes);
+
+        if (!graph.nodes.length) {
+          var text = createSvgEl('text');
+          text.setAttribute('x', width / 2);
+          text.setAttribute('y', height / 2);
+          text.setAttribute('text-anchor', 'middle');
+          text.setAttribute('class', 'graph-empty');
+          text.textContent = 'Upload multiple Markdown files or load the sample graph.';
+          svg.appendChild(text);
+          byId('graphStats').innerHTML = statCards([['Notes', '0'], ['Visible', '0'], ['Links', '0'], ['Hidden', '0']]);
+          byId('fileList').innerHTML = '<li class="text-muted">No files loaded.</li>';
+          return;
+        }
+
+        var visible = getVisibleGraph(graph, settings);
+        var nodes = visible.nodes.map(function (n) { return Object.assign({}, n); });
+        var nodeIds = {};
+        nodes.forEach(function (n) { nodeIds[n.id] = true; });
+        var links = visible.links.filter(function (l) { return nodeIds[l.source] && nodeIds[l.target]; });
+        state.graphSelected = visible.selectedId;
+        layoutGraph(nodes, links, visible.selectedId, width, height, settings.mode);
+        var lookup = getNodeMap(nodes);
+
+        var linkGroup = createSvgEl('g');
+        svg.appendChild(linkGroup);
+        links.forEach(function (link) {
+          var s = lookup[link.source];
+          var t = lookup[link.target];
+          if (!s || !t) return;
+          var path = createSvgEl('path');
+          var mx = (s.x + t.x) / 2;
+          var my = (s.y + t.y) / 2 - 10;
+          path.setAttribute('d', 'M' + s.x.toFixed(1) + ',' + s.y.toFixed(1) + ' Q' + mx.toFixed(1) + ',' + my.toFixed(1) + ' ' + t.x.toFixed(1) + ',' + t.y.toFixed(1));
+          path.setAttribute('fill', 'none');
+          path.setAttribute('class', 'graph-link');
+          path.setAttribute('data-kind', link.kind || 'wikilink');
+          linkGroup.appendChild(path);
+        });
+
+        var nodeGroup = createSvgEl('g');
+        svg.appendChild(nodeGroup);
+        nodes.forEach(function (node) {
+          var group = createSvgEl('g');
+          group.setAttribute('class', 'graph-node' + (node.id === visible.selectedId ? ' selected' : ''));
+          group.setAttribute('data-type', node.type || 'note');
+          group.setAttribute('transform', 'translate(' + node.x.toFixed(1) + ',' + node.y.toFixed(1) + ')');
+          group.addEventListener('click', function () {
+            state.graphSelected = node.id;
+            if (byId('graphSearch')) byId('graphSearch').value = node.id;
+            describeNode(node, graph);
+            renderGraph(graph);
+          });
+
+          var title = createSvgEl('title');
+          title.textContent = node.id + ' · ' + (node.type || 'note') + ' · ' + (node.degree || 0) + ' links';
+          group.appendChild(title);
+
+          var circle = createSvgEl('circle');
+          var baseR = node.type === 'tag' ? 5.5 : node.type === 'missing' ? 4.5 : 8.5;
+          var degreeBoost = Math.min(7, Math.sqrt(node.degree || 0) * 1.2);
+          circle.setAttribute('r', (baseR + degreeBoost + (node.id === visible.selectedId ? 3 : 0)).toFixed(1));
+          group.appendChild(circle);
+
+          var labelNeeded = settings.showLabels || node.id === visible.selectedId || (node.type === 'note' && nodes.length <= 28 && (node.degree || 0) >= 1);
+          if (labelNeeded) {
+            var label = createSvgEl('text');
+            label.setAttribute('x', 13);
+            label.setAttribute('y', 4);
+            label.setAttribute('class', 'graph-label');
+            label.textContent = node.id.length > 30 ? node.id.slice(0, 28) + '…' : node.id;
+            group.appendChild(label);
+          }
+          nodeGroup.appendChild(group);
+        });
+
+        var totalTags = graph.nodes.filter(function (n) { return n.type === 'tag'; }).length;
+        var totalMissing = graph.nodes.filter(function (n) { return n.type === 'missing'; }).length;
+        var hiddenCount = Math.max(0, graph.nodes.length - nodes.length);
+        byId('graphStats').innerHTML = statCards([
+          ['Files', graph.files.length.toLocaleString('en-US')],
+          ['Visible', nodes.length.toLocaleString('en-US')],
+          ['Links', links.length.toLocaleString('en-US')],
+          ['Hidden', hiddenCount.toLocaleString('en-US')],
+        ]) + '<p class="col-span-2 text-xs text-muted leading-relaxed">Total nodes: ' + graph.nodes.length.toLocaleString('en-US') + ' · Tags: ' + totalTags.toLocaleString('en-US') + ' · Missing links: ' + totalMissing.toLocaleString('en-US') + '</p>';
+
+        byId('fileList').innerHTML = graph.files.map(function (file) {
+          var current = file.name === visible.selectedId ? ' aria-current="true"' : '';
+          return '<li><button type="button" class="graph-file-btn" data-focus-node="' + escapeAlways(file.name) + '"' + current + '><span class="font-bold">' + escapeAlways(file.name) + '</span><span class="block text-xs text-muted">' + file.content.length.toLocaleString('en-US') + ' characters</span></button></li>';
+        }).join('') || '<li class="text-muted">No files loaded.</li>';
+
+        Array.prototype.forEach.call(document.querySelectorAll('[data-focus-node]'), function (btn) {
+          btn.addEventListener('click', function () {
+            state.graphSelected = btn.getAttribute('data-focus-node');
+            if (byId('graphSearch')) byId('graphSearch').value = state.graphSelected;
+            var selected = graph.nodes.find(function (n) { return n.id === state.graphSelected; });
+            if (selected) describeNode(selected, graph);
+            renderGraph(graph);
+          });
+        });
+
+        var selectedNode = graph.nodes.find(function (n) { return n.id === visible.selectedId; });
+        if (selectedNode) describeNode(selectedNode, graph);
+      }
+
+      function statCards(rows) {
+        return rows.map(function (r) {
+          return '<div class="border border-ink/20 bg-paper p-3"><dt class="text-[10px] uppercase tracking-wide text-muted">' + r[0] + '</dt><dd class="mt-1 font-bold">' + r[1] + '</dd></div>';
+        }).join('');
+      }
+
+      function describeNode(node, graph) {
+        var outgoing = graph.links.filter(function (l) { return l.source === node.id; });
+        var incoming = graph.links.filter(function (l) { return l.target === node.id; });
+        var outList = outgoing.slice(0, 10).map(function (l) { return l.target; }).join(', ');
+        var inList = incoming.slice(0, 10).map(function (l) { return l.source; }).join(', ');
+        byId('nodeDetail').innerHTML = '<span class="font-bold text-ink">' + escapeAlways(node.id) + '</span>' +
+          '<span class="block mt-1">Type: ' + escapeAlways(node.type || 'note') + '</span>' +
+          '<span class="block">Outgoing: ' + outgoing.length + ' · Incoming: ' + incoming.length + '</span>' +
+          '<span class="block mt-2 text-xs"><strong class="text-ink">Outgoing:</strong> ' + escapeAlways(outList || 'No outgoing links detected.') + '</span>' +
+          '<span class="block mt-1 text-xs"><strong class="text-ink">Incoming:</strong> ' + escapeAlways(inList || 'No incoming links detected.') + '</span>';
+      }
+
+      function readGraphFiles(fileList) {
+        var files = Array.prototype.slice.call(fileList || []);
+        if (!files.length) return;
+        Promise.all(files.map(function (file) {
+          return file.text().then(function (content) { return { name: extractBaseName(file.name), filename: file.name, content: content }; });
+        })).then(function (items) {
+          state.graph = extractGraph(items);
+          state.graphSelected = items[0] ? items[0].name : '';
+          if (byId('graphSearch')) byId('graphSearch').value = state.graphSelected;
+          renderGraph(state.graph);
+          showFeedback('Graph generated locally.');
+        });
+      }
+
+      function loadGraphSample() {
+        var files = [
+          { name: 'TAL Product Ideas', content: '# TAL Product Ideas\n\nLinks to [[Markdown Converter]], [[SEO Tools]], and [[Client Side Products]].\n\n#business #tools' },
+          { name: 'Markdown Converter', content: '# Markdown Converter\n\nConverts notes to HTML and PDF. Related to [[Client Side Products]] and [[Obsidian Workflow]].\n\n#markdown #utility' },
+          { name: 'SEO Tools', content: '# SEO Tools\n\nLinked with [[Founder Website Visibility Report]] and [[TAL Product Ideas]].\n\n#seo #tools' },
+          { name: 'Client Side Products', content: '# Client Side Products\n\nNo database, no login. Links to [[Markdown Converter]].\n\n#client-side' },
+        ];
+        state.graph = extractGraph(files);
+        state.graphSelected = 'TAL Product Ideas';
+        if (byId('graphSearch')) byId('graphSearch').value = state.graphSelected;
+        renderGraph(state.graph);
+        showFeedback('Sample graph loaded.');
+      }
+
+      function initDonateLink() {
+        var url = (PAYPAL_DONATE_URL || '').trim();
+        var section = byId('donateSection');
+        var link = byId('donateLink');
+        if (!url) {
+          section.classList.add('hidden');
+          return;
+        }
+        if (!/^https?:\/\//i.test(url)) url = 'https://' + url.replace(/^\/+/, '');
+        link.href = url;
+        section.classList.remove('hidden');
+      }
+
+      ['markdownInput', 'documentTitle', 'includeCss', 'openLinksNewTab', 'headingAnchors', 'strictEscape'].forEach(function (id) {
+        byId(id).addEventListener('input', recalculate);
+        byId(id).addEventListener('change', recalculate);
+      });
+
+      byId('markdownFile').addEventListener('change', function () {
+        var file = this.files && this.files[0];
+        if (!file) return;
+        file.text().then(function (content) {
+          byId('markdownInput').value = content;
+          if (!byId('documentTitle').value || byId('documentTitle').value === 'Converted Markdown Document') {
+            byId('documentTitle').value = extractBaseName(file.name);
+          }
+          recalculate();
+          showFeedback('Markdown file loaded locally.');
+        });
+      });
+
+      byId('graphFiles').addEventListener('change', function () { readGraphFiles(this.files); });
+      byId('loadGraphSampleBtn').addEventListener('click', loadGraphSample);
+      ['graphViewMode', 'graphShowMissing', 'graphShowTags', 'graphShowLabels', 'graphGlobalLinks', 'graphMaxNodes'].forEach(function (id) {
+        if (!byId(id)) return;
+        byId(id).addEventListener('input', function () { renderGraph(state.graph); });
+        byId(id).addEventListener('change', function () { renderGraph(state.graph); });
+      });
+      if (byId('graphSearch')) {
+        byId('graphSearch').addEventListener('input', function () { renderGraph(state.graph); });
+      }
+      byId('resetGraphViewBtn').addEventListener('click', function () {
+        byId('graphViewMode').value = 'focus';
+        byId('graphShowMissing').checked = true;
+        byId('graphShowTags').checked = false;
+        byId('graphShowLabels').checked = false;
+        byId('graphGlobalLinks').checked = true;
+        byId('graphMaxNodes').value = 80;
+        state.graphSelected = state.graph.files[0] ? state.graph.files[0].name : '';
+        byId('graphSearch').value = state.graphSelected;
+        renderGraph(state.graph);
+        showFeedback('Graph view reset.');
+      });
+      byId('clearGraphBtn').addEventListener('click', function () {
+        byId('graphFiles').value = '';
+        state.graph = { nodes: [], links: [], files: [] };
+        state.graphSelected = '';
+        if (byId('graphSearch')) byId('graphSearch').value = '';
+        renderGraph(state.graph);
+        byId('nodeDetail').textContent = 'Click a graph node or file name to inspect its local relationships.';
+        showFeedback('Graph cleared.');
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll('.tab-btn'), function (btn) {
+        btn.addEventListener('click', function () { setActiveTab(btn.getAttribute('data-tab')); });
+      });
+
+      byId('loadSampleBtn').addEventListener('click', function () {
+        byId('markdownInput').value = sampleMarkdown;
+        byId('documentTitle').value = 'Markdown Conversion Sample';
+        recalculate();
+        showFeedback('Sample Markdown loaded.');
+      });
+
+      byId('clearBtn').addEventListener('click', function () {
+        byId('markdownInput').value = '';
+        byId('markdownFile').value = '';
+        byId('documentTitle').value = 'Converted Markdown Document';
+        recalculate();
+        showFeedback('Input cleared.');
+      });
+
+      byId('copyHtmlBtn').addEventListener('click', function () { recalculate(); copyToClipboard(state.fullHtml, 'HTML copied.'); });
+      byId('copyTextBtn').addEventListener('click', function () { recalculate(); copyToClipboard(state.text, 'Text copied.'); });
+      byId('downloadHtmlBtn').addEventListener('click', function () { recalculate(); downloadFile(safeFilename(byId('documentTitle').value, '.html'), state.fullHtml, 'text/html;charset=utf-8'); showFeedback('HTML downloaded.'); });
+      byId('downloadTxtBtn').addEventListener('click', function () { recalculate(); downloadFile(safeFilename(byId('documentTitle').value, '.txt'), state.text, 'text/plain;charset=utf-8'); showFeedback('TXT downloaded.'); });
+      byId('printBtn').addEventListener('click', function () { recalculate(); window.print(); });
+
+      initDonateLink();
+      byId('markdownInput').value = sampleMarkdown;
+      byId('documentTitle').value = 'Markdown Conversion Sample';
+      recalculate();
+      renderGraph(state.graph);
+    })();
+  </script>
+</body>
+</html>
