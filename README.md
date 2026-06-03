@@ -1,349 +1,198 @@
 # The Architect’s Loop — Founder Utilities Toolkit
 
-The Architect’s Loop is a small collection of privacy-first browser tools for founders, creators, and small website owners.
+The Architect’s Loop is a privacy-first collection of browser tools for founders, creators, and small website owners.
 
-The tools are built as simple client-side web pages.
+Built as static HTML pages: **no login**, **no database**, **no tracking on the tools**, **no server-side processing** for tool use, **no AI/API cost** on the public toolkit.
 
-No login.  
-No database.  
-No tracking on the tools.  
-No backend required for tool processing.  
-No AI/API cost.
+**Live site:** https://thearchitectsloop.com/
 
-The goal is to create practical utilities that help users think clearly, estimate possibilities, review website readiness, prepare metadata, and convert useful working files.
+---
 
-## Core Philosophy
+## This repository
 
-All public tools under The Architect’s Loop follow this rule:
+| Purpose | Details |
+|---------|---------|
+| **GitHub** | Backup of site source and documentation |
+| **Production** | Custom domain — upload `utility website/` to your host (not deployed from GitHub automatically) |
+| **Handoff doc** | See [`TAL_PROJECT.md`](TAL_PROJECT.md) for full file list, changelog, deploy checklists, Kabak setup |
+
+### What to commit
+
+```
+README.md                 ← this file
+TAL_PROJECT.md            ← project handoff / changelog
+utility website/          ← entire site (HTML, robots.txt, sitemap.xml, images/)
+```
+
+Optional: mirror `utility website/*` at repo root if that matches your hosting layout — see [Repository structure](#repository-structure).
+
+### Suggested commit message
+
+```
+Complete TAL v1: 15 tools, combined workbenches, Kabak signup, docs
+
+- Ship all homepage tools; CSV Workbench uses local file upload
+- Related Founder Tools on all inner pages
+- Update sitemap, privacy, disclaimer, README, TAL_PROJECT.md
+```
+
+---
+
+## Core philosophy
 
 > User input stays in the browser. Processing happens in the browser. Output stays with the user.
 
-The tools are designed to be:
+* Privacy-first, account-free, export-focused  
+* **TAO** is a separate product and may use a different architecture later  
+* **Optional homepage signup:** “Notify Me” sends email to [Kabak.info](https://kabak.info/) (`tal-notify-me`) only if the user submits — not required for any tool  
 
-* privacy-first
-* browser-only
-* account-free
-* database-free
-* tracking-free
-* lightweight
-* export-focused
-* practical for real founder work
+---
 
-**TAO** is the only exception and may use a different architecture in the future.
+## Toolkit overview (15 tools)
 
-**Optional homepage email signup:** The homepage offers an optional “Notify Me” form. If used, the email address is sent to [Kabak.info](https://kabak.info/) (`tal-notify-me`) for notifications and CSV export. This is separate from the tools — no account is required to use any tool.
+### Founder Website Tools (6)
 
-## Live Website
+| # | Tool | URL |
+|---|------|-----|
+| 1 | Website Visibility Checker | [/founder-website-visibility-report.html](https://thearchitectsloop.com/founder-website-visibility-report.html) |
+| 2 | Social Preview & Meta Tag Generator | [/social-preview-meta-tag-generator.html](https://thearchitectsloop.com/social-preview-meta-tag-generator.html) |
+| 3 | UTM Link Builder | [/utm-link-builder.html](https://thearchitectsloop.com/utm-link-builder.html) |
+| 4 | Robots.txt Builder | [/robots-txt-builder.html](https://thearchitectsloop.com/robots-txt-builder.html) |
+| 5 | Sitemap.xml Builder | [/sitemap-xml-builder.html](https://thearchitectsloop.com/sitemap-xml-builder.html) |
+| 6 | SEO Snippet Preview | [/seo-snippet-preview.html](https://thearchitectsloop.com/seo-snippet-preview.html) |
 
-https://thearchitectsloop.com/
+### Monetization Tools (2)
 
-## This Repository
+| # | Tool | URL |
+|---|------|-----|
+| 7 | Ad Revenue Potential Estimator | [/ad-revenue-estimator.html](https://thearchitectsloop.com/ad-revenue-estimator.html) |
+| 8 | Founder Business Math | [/business-math-calculators.html](https://thearchitectsloop.com/business-math-calculators.html) |
 
-This GitHub repo is a **backup** of the site source. The live site is hosted on a **custom domain**, not deployed automatically from GitHub.
+*Business Math combines: pricing, break-even, profit margin, revenue scenarios.*
 
-To update production: upload the site files to your web host (see [Repository structure](#repository-structure)).
+### Writing & Publishing Tools (5)
 
-For changelog, roadmap, and deployment notes, see `TAL_PROJECT.md`.
+| # | Tool | URL |
+|---|------|-----|
+| 9 | Markdown to HTML & PDF Converter | [/markdown-to-html-pdf-converter.html](https://thearchitectsloop.com/markdown-to-html-pdf-converter.html) |
+| 10 | YAML Frontmatter Builder | [/frontmatter-builder.html](https://thearchitectsloop.com/frontmatter-builder.html) |
+| 11 | FAQ Schema Generator | [/faq-schema-generator.html](https://thearchitectsloop.com/faq-schema-generator.html) |
+| 12 | Article Schema Generator | [/article-schema-generator.html](https://thearchitectsloop.com/article-schema-generator.html) |
+| 13 | Markdown Table Generator | [/markdown-table-generator.html](https://thearchitectsloop.com/markdown-table-generator.html) |
 
-## Current Tools
+### Spreadsheet & Data Tools (1)
 
-### 1. Ad Revenue Potential Estimator
+| # | Tool | URL |
+|---|------|-----|
+| 14 | CSV Workbench | [/csv-workbench.html](https://thearchitectsloop.com/csv-workbench.html) |
 
-A browser-based calculator for estimating possible website ad revenue based on:
+*Upload `.csv` files (and `.json` for JSON→CSV) in the browser. Merge, clean, dedupe, convert — files are not uploaded to The Architect’s Loop servers.*
 
-* monthly traffic
-* audience geography
-* device mix
-* ad placement density
-* direct revenue add-ons
-* low / realistic / high scenarios
+### Knowledge Management Tools (1)
 
-Live tool: https://thearchitectsloop.com/ad-revenue-estimator.html
+| # | Tool | URL |
+|---|------|-----|
+| 15 | Obsidian & Notes Toolkit | [/obsidian-toolkit.html](https://thearchitectsloop.com/obsidian-toolkit.html) |
 
-### 2. Founder Website Visibility Report
+*Vault starter downloads, note templates, Mermaid diagram preview.*
 
-A manual website readiness checklist for founders and small website owners.
+---
 
-It helps review:
+## Practical guides (4)
 
-* search positioning
-* title and meta description
-* website clarity
-* technical readiness
-* trust signals
-* competitor awareness
-* priority next actions
+* [How much can a website earn from ads?](https://thearchitectsloop.com/how-much-can-a-website-earn-from-ads.html)
+* [What is RPM in website advertising?](https://thearchitectsloop.com/what-is-rpm-in-website-advertising.html)
+* [How many visitors do you need to make money online?](https://thearchitectsloop.com/how-many-visitors-do-you-need-to-make-money-online.html)
+* [How to convert Markdown to HTML and PDF](https://thearchitectsloop.com/how-to-convert-markdown-to-html-and-pdf.html)
 
-Live tool: https://thearchitectsloop.com/founder-website-visibility-report.html
+---
 
-### 3. Markdown to HTML & PDF Converter
+## Free downloads
 
-A client-side Markdown converter that allows users to:
+Payhip library: https://payhip.com/thearchitectsloop
 
-* paste Markdown
-* upload Markdown files
-* preview Markdown
-* export HTML
-* copy HTML
-* download TXT
-* copy clean text
-* print or save as PDF
-* generate a simple local graph view from linked Markdown notes
+---
 
-The graph view detects:
+## Cross-linking & homepage
 
-* `[[wikilinks]]`
-* `.md` links
-* `#tags`
+* **Homepage** (`index.html`): full tool directory — **15 Tools Available**, no “Shipping Soon”
+* **Inner pages:** “Related Founder Tools” section before the footer (tools, guides, privacy, disclaimer)
+* **Email signup:** optional block on homepage (Kabak)
 
-Live tool: https://thearchitectsloop.com/markdown-to-html-pdf-converter.html
+---
 
-### 4. Social Preview & Meta Tag Generator
+## Tech stack
 
-A client-side tool for creating and previewing social sharing metadata.
+* HTML + vanilla JavaScript  
+* Tailwind CSS via CDN (most pages)  
+* Social Preview: standalone CSS (same visual language)  
+* Obsidian toolkit: Mermaid via jsDelivr (preview only)  
+* No build step required  
 
-It allows users to:
+---
 
-* enter a page title
-* enter a meta description
-* enter a website URL
-* enter an image URL
-* preview social link cards
-* generate basic HTML meta tags
-* generate Open Graph tags
-* generate Twitter/X card tags
-* copy the generated code
+## Privacy (summary)
 
-This tool is a manual builder and previewer. It does not scan websites, fetch pages, or collect user data.
+* Tools process data in the browser  
+* Markdown and CSV tools read files locally (File API)  
+* No analytics or ad scripts on toolkit pages  
+* Optional email signup uses Kabak.info (see `privacy.html` on the live site)  
+* Tailwind / Mermaid CDNs may receive normal HTTP request metadata  
 
-Live tool: https://thearchitectsloop.com/social-preview-meta-tag-generator.html
+Full policy: https://thearchitectsloop.com/privacy.html
 
-## Practical Guides
+---
 
-The website also includes simple guide pages connected to the tools.
+## Repository structure
 
-Current guides include:
-
-* How much can a website earn from ads?
-* What is RPM in website advertising?
-* How many visitors do you need to make money online?
-* How to convert Markdown to HTML and PDF
-
-## Free Downloads
-
-Downloadable files (dashboards, spreadsheets, templates) are hosted on Payhip:
-
-https://payhip.com/thearchitectsloop
-
-## Homepage Structure
-
-The homepage is organized as a lean tool directory.
-
-Current categories include:
-
-### Founder Website Tools
-
-* Website Visibility Checker
-* Social Preview & Meta Tag Generator
-* Robots.txt Builder — Shipping Soon
-* Sitemap.xml Builder — Shipping Soon
-* SEO Snippet Preview — Shipping Soon
-
-### Monetization Tools
-
-* Ad Revenue Estimator
-* Revenue Scenario Planner — Shipping Soon
-* Pricing Calculator — Shipping Soon
-* Break-Even Calculator — Shipping Soon
-* Profit Margin Calculator — Shipping Soon
-
-### Writing & Publishing Tools
-
-* Markdown to HTML/PDF Converter
-* YAML Frontmatter Builder — Shipping Soon
-* FAQ Schema Generator — Shipping Soon
-* Article Schema Generator — Shipping Soon
-* Markdown Table Generator — Shipping Soon
-
-### Spreadsheet & Data Tools
-
-* CSV Merger — Shipping Soon
-* CSV Cleaner — Shipping Soon
-* Duplicate Row Remover — Shipping Soon
-* CSV to JSON — Shipping Soon
-* JSON to CSV — Shipping Soon
-
-### Knowledge Management Tools
-
-* Obsidian Vault Starter Generator — Shipping Soon
-* Note Template Generator — Shipping Soon
-* Mermaid Diagram Generator — Shipping Soon
-* Frontmatter Builder — Shipping Soon
-
-### Optional updates (homepage)
-
-* **Get New Tool Updates** — optional email signup (Kabak.info), no account required
-
-## Cross-linking
-
-Tool, guide, privacy, and disclaimer pages include a **Related Founder Tools** section before the footer (homepage uses the full directory instead).
-
-## Design Direction
-
-The design is intentionally simple:
-
-* square borders
-* minimal colors
-* readable layout
-* no heavy animation
-* no account system
-* export-focused tools
-* privacy-first messaging
-* clear tool categories
-
-The visual style uses:
-
-* paper background
-* black ink text
-* muted gray secondary text
-* blue accent color
-* simple utility card layouts
-
-## Tech Stack
-
-This project is intentionally lightweight.
-
-Current stack:
-
-* HTML
-* Tailwind CSS via CDN (most pages)
-* Vanilla JavaScript
-* Static hosting
-
-No build process is required.
-
-For stricter self-contained deployment, Tailwind CSS can be compiled or self-hosted instead of loaded from a CDN.
-
-The Social Preview tool uses standalone CSS with the same visual language.
-
-## Privacy Approach
-
-The tools are designed to run inside the browser.
-
-Current public tools do not require:
-
-* user accounts
-* database storage
-* server-side file upload
-* analytics scripts
-* tracking pixels
-* programmatic advertising scripts
-* AI/API requests
-
-Some pages may load styling assets such as Tailwind CSS from a CDN. User inputs are not submitted to a database or backend by the tools.
-
-The optional homepage email signup sends only an email address to Kabak.info when the user chooses to submit it. Update `privacy.html` when describing this on the live site.
-
-## Repository Structure
-
-Working copy on disk may use a `utility website/` folder. On the web server (and often in this GitHub backup), files typically sit at the **site root**:
+**Source of truth on disk:**
 
 ```text
-/
-├── index.html
-├── ad-revenue-estimator.html
-├── founder-website-visibility-report.html
-├── markdown-to-html-pdf-converter.html
-├── social-preview-meta-tag-generator.html
-├── how-much-can-a-website-earn-from-ads.html
-├── what-is-rpm-in-website-advertising.html
-├── how-many-visitors-do-you-need-to-make-money-online.html
-├── how-to-convert-markdown-to-html-and-pdf.html
-├── privacy.html
-├── disclaimer.html
-├── robots.txt
-├── sitemap.xml
-├── images/
+The Architect's Loop/
 ├── README.md
-└── TAL_PROJECT.md
+├── TAL_PROJECT.md
+└── utility website/
+    ├── index.html
+    ├── *.html              (tools + guides + legal)
+    ├── robots.txt
+    ├── sitemap.xml
+    └── images/
 ```
 
-## Local Usage
+**On the web server**, files usually live at the **site root** (same names as inside `utility website/`).
 
-To run locally:
+---
 
-1. Download or clone the repository.
-2. Open `index.html` in a browser.
-3. Open any tool page directly if needed.
+## Local usage
 
-Because this is a static website, no server is required for basic use.
+1. Clone or download this repo  
+2. Open `utility website/index.html` in a browser  
+3. No local server required  
+
+---
 
 ## Deployment
 
-Upload the site files to your static host (custom domain).
+1. Upload `utility website/` contents to production host  
+2. Keep GitHub in sync for backup (`README.md`, `TAL_PROJECT.md`, site files)  
 
-The public site is at:
+After changes, update `sitemap.xml` and legal pages when relevant.
 
-https://thearchitectsloop.com/
+---
 
-After adding new pages, update:
+## Project status
 
-* `index.html`
-* `sitemap.xml`
-* internal links
-* `privacy.html` / `disclaimer.html` if needed
-* `README.md` and `TAL_PROJECT.md` in this backup repo
+**TAL toolkit v1 is complete** — all homepage-listed tools are live.
 
-## Project Status
+**Next:** TAO development; optional TAL maintenance (guides, assets, self-hosted CSS).
 
-This project is still in early development.
+Details and changelog: [`TAL_PROJECT.md`](TAL_PROJECT.md)
 
-Current focus:
-
-* building small useful tools
-* keeping tool logic client-side
-* keeping the tools privacy-first
-* improving practical guide pages
-* improving homepage directory structure
-* testing which tools are actually useful for users
-
-## Future Ideas
-
-Future tools must follow the same philosophy:
-
-* privacy-first
-* browser-only
-* no accounts
-* no database
-* no tracking
-* no AI/API costs
-
-Possible future tools:
-
-* Robots.txt Builder
-* Sitemap.xml Builder
-* SEO Snippet Preview
-* Revenue Scenario Planner
-* Pricing Calculator
-* Break-Even Calculator
-* YAML Frontmatter Builder
-* FAQ Schema Generator
-* Article Schema Generator
-* CSV Merger
-* CSV Cleaner
-* Obsidian Vault Starter Generator
-* Note Template Generator
-* Mermaid Diagram Generator
+---
 
 ## Contact
 
-The Architect’s Loop  
-https://thearchitectsloop.com/
-
-Contact email: [thearchitectsloop@proton.me](mailto:thearchitectsloop@proton.me)
-
-## License
-
-All rights reserved unless otherwise stated.
+* Site: https://thearchitectsloop.com/  
+* Email: [thearchitectsloop@proton.me](mailto:thearchitectsloop@proton.me)
 
 © 2026 The Architect’s Loop. Built by Tun Bakyu.

@@ -2,156 +2,217 @@
 
 **Site:** [thearchitectsloop.com](https://www.thearchitectsloop.com)  
 **Local path:** `Digital Products/The Architect's Loop/`  
-**Published site files:** `utility website/`  
-**Homepage:** `utility website/index.html`
+**Published site files:** `utility website/` (upload contents to web host root)  
+**GitHub:** backup of site source + these docs  
+**Status:** **TAL toolkit v1 complete** — ready to focus on **TAO**
+
+**Last doc update:** 3 June 2026
 
 ---
 
-## Shipped (live on site today)
+## Quick reference
 
-### Tools (4) — client-side, no accounts
+| | |
+|---|---|
+| Live tools | **15** |
+| Guides | **4** |
+| Homepage | `utility website/index.html` |
+| Email signup | Kabak — `https://kabak.info/f/tal-notify-me` |
+| Related tools block | All tool, guide, and legal pages (not homepage) |
 
-| Tool | File | Status |
+---
+
+## Shipped tools (15)
+
+### Founder Website Tools (6)
+
+| Tool | File |
+|------|------|
+| Website Visibility Checker | `founder-website-visibility-report.html` |
+| Social Preview & Meta Tag Generator | `social-preview-meta-tag-generator.html` |
+| UTM Link Builder | `utm-link-builder.html` |
+| Robots.txt Builder | `robots-txt-builder.html` |
+| Sitemap.xml Builder | `sitemap-xml-builder.html` |
+| SEO Snippet Preview | `seo-snippet-preview.html` |
+
+### Monetization Tools (2)
+
+| Tool | File | Notes |
 |------|------|--------|
-| Website Visibility Checker | `founder-website-visibility-report.html` | **Shipped** |
-| Social Preview & Meta Tag Generator | `social-preview-meta-tag-generator.html` | **Shipped** |
-| Ad Revenue Potential Estimator | `ad-revenue-estimator.html` | **Shipped** |
-| Markdown to HTML & PDF Converter | `markdown-to-html-pdf-converter.html` | **Shipped** |
+| Ad Revenue Potential Estimator | `ad-revenue-estimator.html` | Standalone |
+| Founder Business Math | `business-math-calculators.html` | **Combined:** Pricing, Break-Even, Profit Margin, Revenue Scenarios |
 
-### Practical guides (4)
+### Writing & Publishing Tools (5)
 
-| Guide | File | Status |
-|-------|------|--------|
-| How Much Can a Website Earn From Ads? | `how-much-can-a-website-earn-from-ads.html` | **Shipped** |
-| What Is RPM in Website Advertising? | `what-is-rpm-in-website-advertising.html` | **Shipped** |
-| How Many Visitors Do You Need to Make Money Online? | `how-many-visitors-do-you-need-to-make-money-online.html` | **Shipped** |
-| How to Convert Markdown to HTML and PDF | `how-to-convert-markdown-to-html-and-pdf.html` | **Shipped** |
+| Tool | File | Notes |
+|------|------|--------|
+| Markdown to HTML & PDF Converter | `markdown-to-html-pdf-converter.html` | File upload for `.md` |
+| YAML Frontmatter Builder | `frontmatter-builder.html` | **Combined:** YAML + Frontmatter Builder |
+| FAQ Schema Generator | `faq-schema-generator.html` | |
+| Article Schema Generator | `article-schema-generator.html` | |
+| Markdown Table Generator | `markdown-table-generator.html` | Paste or build rows |
 
-### Site infrastructure
+### Spreadsheet & Data Tools (1)
+
+| Tool | File | Notes |
+|------|------|--------|
+| CSV Workbench | `csv-workbench.html` | **Combined:** Merger, Cleaner, Dedupe, CSV↔JSON. **Upload** `.csv` / `.json` via File API (local only) |
+
+### Knowledge Management Tools (1)
+
+| Tool | File | Notes |
+|------|------|--------|
+| Obsidian & Notes Toolkit | `obsidian-toolkit.html` | **Combined:** Vault starter downloads, note templates, Mermaid preview (jsDelivr CDN) |
+
+---
+
+## Guides (4)
+
+| Guide | File |
+|-------|------|
+| How Much Can a Website Earn From Ads? | `how-much-can-a-website-earn-from-ads.html` |
+| What Is RPM in Website Advertising? | `what-is-rpm-in-website-advertising.html` |
+| How Many Visitors Do You Need to Make Money Online? | `how-many-visitors-do-you-need-to-make-money-online.html` |
+| How to Convert Markdown to HTML and PDF | `how-to-convert-markdown-to-html-and-pdf.html` |
+
+---
+
+## All public HTML files (`utility website/`)
+
+```
+index.html
+ad-revenue-estimator.html
+article-schema-generator.html
+business-math-calculators.html
+csv-workbench.html
+disclaimer.html
+faq-schema-generator.html
+founder-website-visibility-report.html
+frontmatter-builder.html
+how-much-can-a-website-earn-from-ads.html
+how-many-visitors-do-you-need-to-make-money-online.html
+how-to-convert-markdown-to-html-and-pdf.html
+markdown-table-generator.html
+markdown-to-html-pdf-converter.html
+obsidian-toolkit.html
+privacy.html
+robots-txt-builder.html
+seo-snippet-preview.html
+sitemap-xml-builder.html
+social-preview-meta-tag-generator.html
+utm-link-builder.html
+what-is-rpm-in-website-advertising.html
+```
+
+Also: `robots.txt`, `sitemap.xml`, `images/` (favicon, etc.)
+
+**Not for production:** `original TAL index.html`, `googleb70b8ab06061da7b.html` (verification only)
+
+---
+
+## Combined tools (index duplicates merged)
+
+| Original homepage “Shipping Soon” items | Shipped as |
+|----------------------------------------|------------|
+| Revenue Scenario Planner, Pricing, Break-Even, Profit Margin | `business-math-calculators.html` |
+| YAML Frontmatter Builder + Frontmatter Builder | `frontmatter-builder.html` |
+| CSV Merger, Cleaner, Duplicate Row Remover, CSV to JSON, JSON to CSV | `csv-workbench.html` |
+| Obsidian Vault Starter, Note Templates, Mermaid, Frontmatter (KM) | `obsidian-toolkit.html` |
+
+---
+
+## Site infrastructure
 
 | Item | Status |
 |------|--------|
-| Homepage tool directory + roadmap cards | **Shipped** |
-| Free Download Library block (Payhip link) | **Shipped** |
-| Privacy & Disclaimer pages | **Shipped** |
-| Homepage email signup UI (“Notify Me”) | **Shipped** (UI + JS ready) |
-| Email signup backend | **Kabak.info** — `https://kabak.info/f/tal-notify-me` (live in `index.html`) |
-| Related Founder Tools footer block | **Shipped** on all pages except `index.html` |
-
-### External
-
-| Item | Status |
-|------|--------|
-| Payhip free downloads | **Live** — [payhip.com/thearchitectsloop](https://payhip.com/thearchitectsloop) |
+| Homepage — 15 tools, no “Shipping Soon” | Done |
+| Optional email signup (Kabak) | `tal-notify-me` on `#tal-notify-form` |
+| Related Founder Tools (before footer) | All tools, guides, `privacy.html`, `disclaimer.html` |
+| `sitemap.xml` | 22 URLs, `lastmod` 2026-06-03 |
+| `robots.txt` | `Sitemap: https://thearchitectsloop.com/sitemap.xml` |
+| `privacy.html` / `disclaimer.html` | Updated for full toolkit, Kabak, file uploads |
+| Payhip downloads | [payhip.com/thearchitectsloop](https://payhip.com/thearchitectsloop) |
 
 ---
 
-## On the way (listed on homepage, not built yet)
+## Deployment
 
-### Founder Website Tools
+| Target | How |
+|--------|-----|
+| **Production** | Upload `utility website/` files to custom domain document root |
+| **GitHub** | Commit `utility website/` + `README.md` + `TAL_PROJECT.md` (backup) |
 
-- Robots.txt Builder
-- Sitemap.xml Builder
-- SEO Snippet Preview
+Production is **not** auto-deployed from GitHub.
 
-### Monetization Tools
+### Production checklist (host)
 
-- Revenue Scenario Planner
-- Pricing Calculator
-- Break-Even Calculator
-- Profit Margin Calculator
+- [ ] Upload full `utility website/` (or sync changed files since last deploy)
+- [ ] Test homepage Kabak signup on live URL
+- [ ] Test CSV Workbench with a real `.csv` upload
+- [ ] Optional: resubmit `sitemap.xml` in Google Search Console
 
-### Writing & Publishing Tools
+### GitHub backup checklist
 
-- YAML Frontmatter Builder
-- FAQ Schema Generator
-- Article Schema Generator
-- Markdown Table Generator
+- [ ] Commit all files under `utility website/`
+- [ ] Commit `README.md` and `TAL_PROJECT.md`
+- [ ] Do not commit secrets (none required for static site)
 
-### Spreadsheet & Data Tools (whole category)
+**Suggested commit message:**
 
-- CSV Merger
-- CSV Cleaner
-- Duplicate Row Remover
-- CSV to JSON
-- JSON to CSV
+```
+Complete TAL v1: 15 tools, combined workbenches, Kabak signup, docs
 
-### Knowledge Management Tools (whole category)
-
-- Obsidian Vault Starter Generator
-- Note Template Generator
-- Mermaid Diagram Generator
-- Frontmatter Builder
+- Ship all homepage tools (SEO, business math, publishing, CSV, Obsidian)
+- CSV Workbench: local file upload via File API
+- Related Founder Tools on all inner pages
+- Update sitemap, privacy, disclaimer, README, TAL_PROJECT.md
+```
 
 ---
 
-## Recent changes
+## Email signup (Kabak)
 
-### 2026-06-03 — Kabak.info email signup
-
-**Files changed:** `utility website/index.html`
-
-- Form `action` → `https://kabak.info/f/tal-notify-me`
-- Hidden `_honey` honeypot for spam protection
-- `fetch` posts `FormData(form)` to Kabak; success UI unchanged
-
-### 2026-06-03 — Related tools section (all non-index HTML)
-
-**Pattern:** Matches `social-preview-meta-tag-generator.html` — eyebrow “Related Founder Tools”, heading “Continue the website setup workflow”.
-
-| Page type | Links shown |
-|-----------|-------------|
-| Tool pages | 3 other tools (current tool excluded) |
-| Guides, privacy, disclaimer | All 4 tools |
-
-**Updated files:** `founder-website-visibility-report.html`, `ad-revenue-estimator.html`, `markdown-to-html-pdf-converter.html`, all 4 guide HTML files, `privacy.html`, `disclaimer.html`.  
-**Unchanged:** `index.html`, `social-preview-meta-tag-generator.html` (already had section), `googleb70b8ab06061da7b.html` (Google verification only), `original TAL index.html` (archive).
-
-### 2026-06-03 — Homepage email notification signup
-
-- Section **Get New Tool Updates** after Practical Guides, before footer
-- Formspree-ready form; `action` URL not set yet
-- Vanilla JS: validate email, `fetch` POST when `action` is set
-
----
-
-## Email signup backend (Notify Me) — Kabak.info
-
-**Provider:** [Kabak.info](https://kabak.info/) — free tier, dashboard, **CSV export**, Telegram alerts optional.
-
-**Status:** Integrated in `utility website/index.html` (vanilla `fetch` + `FormData`, no page reload). Honeypot field `_honey` included per Kabak docs.
-
-### Endpoint
-
-`https://kabak.info/f/tal-notify-me`
-
-### Verify after deploy
-
-1. Submit a test email on the homepage.
-2. Confirm it appears in the [Kabak dashboard](https://kabak.info/).
-3. Export CSV from dashboard when needed (Telegram alerts optional in Kabak settings).
-
-**Rejected earlier:** Formspree (no CSV on free), Formtorch (150/mo cap).
-
-**Still todo:** Short note in `privacy.html` that optional signups are stored/processed via Kabak.info (third party).
+- **Endpoint:** `https://kabak.info/f/tal-notify-me`
+- **Form:** `utility website/index.html` → `#tal-notify-form`
+- **Backend:** Kabak.info (third party); optional CSV export in Kabak dashboard
+- Formspree was considered; not used (CSV export on free tier)
 
 ---
 
 ## Conventions
 
-- **Homepage / guides:** Tailwind CDN, tokens `ink` / `paper` / `muted` / `accent`, square borders
-- **Social Preview tool:** Standalone CSS (same visual language)
-- **Related tools:** Before footer; tool pages = 3 links; content/legal pages = 4 links
-- **Tools:** Leave tool logic unchanged unless explicitly requested
+- Static HTML; Tailwind CDN on most pages; Social Preview uses standalone CSS
+- Vanilla JavaScript only on tools and homepage signup
+- Tool data stays in browser; files read with **File API** (Markdown, CSV) — not sent to TAL servers
+- Exception: optional homepage email → Kabak only
 
 ---
 
-## Next session checklist
+## Changelog
 
-- [ ] Test production submit on live site (`tal-notify-me`) and confirm Kabak dashboard entry
-- [ ] Update `privacy.html` — optional email signups via Kabak.info
-- [ ] Deploy `utility website/` changes to production host
+### 2026-06-03 — Related tools + CSV upload fix
+
+- Related Founder Tools added to all new tool pages that lacked it
+- CSV Workbench: primary UX is **upload CSV/JSON files**, not paste-only
+
+### 2026-06-03 — TAL toolkit v1 complete
+
+- 10 new tool pages; homepage 15 tools; no Shipping Soon
+- Full `sitemap.xml`; legal pages updated
+
+### 2026-06-03 — UTM Link Builder + Kabak signup
+
+- `utm-link-builder.html`; homepage notify form wired to Kabak
 
 ---
 
-*Update this file whenever we change the TAL website or project plan.*
+## Next work
+
+| Track | Notes |
+|-------|--------|
+| **TAO** | Separate product; different architecture (see TAO workspace) |
+| **TAL maintenance** | New guides, Payhip assets, self-hosted Tailwind, tune individual tools |
+
+---
+
+*Update this file whenever the live site or GitHub backup changes.*
