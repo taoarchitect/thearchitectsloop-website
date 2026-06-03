@@ -212,6 +212,7 @@ Complete TAL v1: 15 tools, combined workbenches, Kabak signup, docs
 - **Endpoint:** `https://kabak.info/f/tal-notify-me`
 - **Form:** `utility website/index.html` → `#tal-notify-form`
 - **Backend:** Kabak.info (third party); optional CSV export in Kabak dashboard
+- **AJAX note:** Kabak returns `400 No data submitted` for `multipart/form-data` (`FormData`). Homepage `fetch` must use `application/x-www-form-urlencoded` (`URLSearchParams` + `email` field).
 - Formspree was considered; not used (CSV export on free tier)
 
 ---
@@ -226,6 +227,10 @@ Complete TAL v1: 15 tools, combined workbenches, Kabak signup, docs
 ---
 
 ## Changelog
+
+### 2026-06-03 — Kabak signup fix (No data submitted)
+
+- Notify form: POST as `application/x-www-form-urlencoded` instead of `FormData` (Kabak rejects multipart).
 
 ### 2026-06-03 — Homepage positioning (job-first pitch)
 
