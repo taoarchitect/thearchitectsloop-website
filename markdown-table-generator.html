@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markdown Table Generator | The Architect’s Loop</title>
+  <meta name="description" content="Build Markdown tables from rows and columns. Copy GitHub-flavored Markdown table syntax." />
+  <link rel="canonical" href="https://thearchitectsloop.com/markdown-table-generator.html" />
+  <link rel="icon" type="image/png" href="/images/tal favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{ink:'#0a0a0a',paper:'#f4f4f0',muted:'#6b6b6b',accent:'#1a56ff'}}}};</script>
+  <style>*{border-radius:0!important}pre{white-space:pre-wrap}</style>
+</head>
+<body class="min-h-screen bg-paper text-ink antialiased">
+  <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+    <nav class="mb-8 border-b border-ink/20 pb-4"><a href="./" class="text-xs font-bold uppercase tracking-[0.2em] hover:text-accent">The Architect’s Loop</a></nav>
+    <header class="mb-8 border-b-2 border-ink pb-6">
+      <h1 class="text-3xl font-bold">Markdown Table Generator</h1>
+      <p class="mt-2 text-sm text-muted">Paste CSV-like rows (comma or tab separated) or use the grid builder.</p>
+      <button type="button" id="copyBtn" class="mt-4 border-2 border-ink bg-ink px-4 py-2 text-xs font-bold uppercase text-paper hover:bg-accent">Copy Markdown</button>
+    </header>
+    <main class="grid gap-8 lg:grid-cols-2">
+      <section class="border-2 border-ink bg-white p-6">
+        <label class="text-xs font-bold uppercase">Paste data (first row = header)</label>
+        <textarea id="raw" rows="10" class="mt-2 w-full border-2 border-ink bg-paper px-3 py-2 text-sm font-mono" placeholder="Column A,Column B&#10;One,Two"></textarea>
+        <div class="mt-4 flex gap-2">
+          <button type="button" id="addCol" class="border border-ink px-2 py-1 text-[10px] font-bold uppercase">+ Column</button>
+          <button type="button" id="addRow" class="border border-ink px-2 py-1 text-[10px] font-bold uppercase">+ Row</button>
+        </div>
+      </section>
+      <pre id="out" class="border-2 border-ink bg-white p-4 text-sm"></pre>
+    </main>
+
+    <section class="mt-12 border-t border-ink/20 pt-10 sm:mt-16 sm:pt-12" aria-labelledby="relatedToolsHeading">
+      <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Related Founder Tools</p>
+      <h2 id="relatedToolsHeading" class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Continue the website setup workflow</h2>
+      <div class="mt-6 grid gap-3 md:grid-cols-3">
+        <a href="./markdown-to-html-pdf-converter.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Markdown Converter</span><span aria-hidden="true">→</span></a>
+        <a href="./frontmatter-builder.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Frontmatter Builder</span><span aria-hidden="true">→</span></a>
+        <a href="./faq-schema-generator.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>FAQ Schema</span><span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <footer class="mt-12 border-t border-ink/20 pt-6 text-center text-[10px] text-muted">
+      <p>A tool by The Architect’s Loop · <a href="./privacy.html" class="underline hover:text-accent">Privacy</a></p>
+    </footer>
+  </div>
+  <script>
+(function(){
+  var raw=document.getElementById('raw'),out=document.getElementById('out');
+  function parse(){
+    var text=raw.value.trim();if(!text)return [['Header 1','Header 2'],['Cell','Cell']];
+    return text.split(/\n/).map(function(line){
+      if(line.indexOf('\t')>=0)return line.split('\t').map(function(c){return c.trim();});
+      return line.split(',').map(function(c){return c.trim();});
+    });
+  }
+  function toMd(rows){
+    if(!rows.length)return '';
+    var cols=Math.max.apply(null,rows.map(function(r){return r.length;}));
+    rows.forEach(function(r){while(r.length<cols)r.push('');});
+    var head=rows[0],body=rows.slice(1);
+    var lines=['| '+head.join(' | ')+' |','| '+head.map(function(){return '---';}).join(' | ')+' |'];
+    body.forEach(function(r){lines.push('| '+r.join(' | ')+' |');});
+    return lines.join('\n');
+  }
+  function render(){out.textContent=toMd(parse());}
+  raw.addEventListener('input',render);
+  document.getElementById('addCol').addEventListener('click',function(){
+    var rows=parse();rows.forEach(function(r,i){r.push(i?'New':'Col '+ (r.length+1));});raw.value=rows.map(function(r){return r.join(',');}).join('\n');render();
+  });
+  document.getElementById('addRow').addEventListener('click',function(){
+    var rows=parse(),cols=rows[0]?rows[0].length:2;rows.push(Array(cols).fill(''));raw.value=rows.map(function(r){return r.join(',');}).join('\n');render();
+  });
+  document.getElementById('copyBtn').addEventListener('click',function(){navigator.clipboard.writeText(out.textContent);});
+  render();
+})();
+  </script>
+</body>
+</html>

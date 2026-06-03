@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YAML Frontmatter Builder | The Architect’s Loop</title>
+  <meta name="description" content="Build YAML frontmatter for Markdown notes and blog posts. Client-side frontmatter and metadata builder." />
+  <link rel="canonical" href="https://thearchitectsloop.com/frontmatter-builder.html" />
+  <link rel="icon" type="image/png" href="/images/tal favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{ink:'#0a0a0a',paper:'#f4f4f0',muted:'#6b6b6b',accent:'#1a56ff'}}}};</script>
+  <style>*{border-radius:0!important}pre{white-space:pre-wrap;word-break:break-word}</style>
+</head>
+<body class="min-h-screen bg-paper text-ink antialiased">
+  <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+    <nav class="mb-8 border-b border-ink/20 pb-4"><a href="./" class="text-xs font-bold uppercase tracking-[0.2em] hover:text-accent">The Architect’s Loop</a></nav>
+    <header class="mb-8 border-b-2 border-ink pb-6">
+      <h1 class="text-3xl font-bold">YAML Frontmatter Builder</h1>
+      <p class="mt-2 text-sm text-muted">For Obsidian, Hugo, Jekyll, and static blogs. Combines YAML Frontmatter Builder and Frontmatter Builder into one tool.</p>
+      <button type="button" id="copyBtn" class="mt-4 border-2 border-ink bg-ink px-4 py-2 text-xs font-bold uppercase text-paper hover:bg-accent">Copy YAML</button>
+    </header>
+    <main class="grid gap-8 lg:grid-cols-2">
+      <section class="border-2 border-ink bg-white p-6 space-y-3 text-sm">
+        <div><label class="text-xs font-bold uppercase">title</label><input id="title" class="mt-1 w-full border-2 border-ink bg-paper px-3 py-2" placeholder="Post title" /></div>
+        <div><label class="text-xs font-bold uppercase">description</label><textarea id="description" rows="2" class="mt-1 w-full border-2 border-ink bg-paper px-3 py-2"></textarea></div>
+        <div><label class="text-xs font-bold uppercase">date (YYYY-MM-DD)</label><input id="date" type="date" class="mt-1 w-full border-2 border-ink bg-paper px-3 py-2" /></div>
+        <div><label class="text-xs font-bold uppercase">tags (comma separated)</label><input id="tags" class="mt-1 w-full border-2 border-ink bg-paper px-3 py-2" placeholder="founder, seo" /></div>
+        <div><label class="text-xs font-bold uppercase">author</label><input id="author" class="mt-1 w-full border-2 border-ink bg-paper px-3 py-2" /></div>
+        <div><label class="text-xs font-bold uppercase">slug</label><input id="slug" class="mt-1 w-full border-2 border-ink bg-paper px-3 py-2" /></div>
+        <div><label class="text-xs font-bold uppercase">draft</label><select id="draft" class="mt-1 w-full border-2 border-ink bg-paper px-3 py-2"><option value="false">false</option><option value="true">true</option></select></div>
+      </section>
+      <section class="border-2 border-ink bg-white p-6">
+        <pre id="out" class="border-2 border-ink bg-paper p-4 text-xs"></pre>
+      </section>
+    </main>
+
+    <section class="mt-12 border-t border-ink/20 pt-10 sm:mt-16 sm:pt-12" aria-labelledby="relatedToolsHeading">
+      <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Related Founder Tools</p>
+      <h2 id="relatedToolsHeading" class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Continue the website setup workflow</h2>
+      <div class="mt-6 grid gap-3 md:grid-cols-3">
+        <a href="./markdown-to-html-pdf-converter.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Markdown Converter</span><span aria-hidden="true">→</span></a>
+        <a href="./article-schema-generator.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Article Schema</span><span aria-hidden="true">→</span></a>
+        <a href="./obsidian-toolkit.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Obsidian Toolkit</span><span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <footer class="mt-12 border-t border-ink/20 pt-6 text-center text-[10px] text-muted">
+      <p>A tool by The Architect’s Loop · <a href="./privacy.html" class="underline hover:text-accent">Privacy</a></p>
+    </footer>
+  </div>
+  <script>
+(function(){
+  var ids=['title','description','date','tags','author','slug','draft'];
+  function yamlEsc(s){return String(s).replace(/"/g,'\\"');}
+  function build(){
+    var lines=['---'];
+    var t=document.getElementById('title').value.trim();if(t)lines.push('title: "'+yamlEsc(t)+'"');
+    var d=document.getElementById('description').value.trim();if(d)lines.push('description: "'+yamlEsc(d)+'"');
+    var dt=document.getElementById('date').value;if(dt)lines.push('date: '+dt);
+    var tags=document.getElementById('tags').value.split(',').map(function(x){return x.trim();}).filter(Boolean);
+    if(tags.length)lines.push('tags: ['+tags.map(function(x){return '"'+yamlEsc(x)+'"';}).join(', ')+']');
+    var a=document.getElementById('author').value.trim();if(a)lines.push('author: "'+yamlEsc(a)+'"');
+    var s=document.getElementById('slug').value.trim();if(s)lines.push('slug: '+s);
+    lines.push('draft: '+document.getElementById('draft').value);
+    lines.push('---','');
+    document.getElementById('out').textContent=lines.join('\n');
+  }
+  ids.forEach(function(id){document.getElementById(id).addEventListener('input',build);document.getElementById(id).addEventListener('change',build);});
+  document.getElementById('date').valueAsDate=new Date();
+  document.getElementById('copyBtn').addEventListener('click',function(){navigator.clipboard.writeText(document.getElementById('out').textContent);});
+  build();
+})();
+  </script>
+</body>
+</html>

@@ -27,15 +27,15 @@
 </head>
 <body class="min-h-screen bg-paper text-ink antialiased">
   <div class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
-    <nav class="flex flex-wrap items-center justify-between gap-4 border-b border-ink/20 pb-4 mb-12" aria-label="Toolkit navigation">
+    <nav class="mb-12 flex flex-wrap items-center justify-between gap-4 border-b border-ink/20 pb-4" aria-label="Toolkit navigation">
       <a href="./" class="text-xs font-bold uppercase tracking-[0.2em] hover:text-accent">The Architect’s Loop</a>
-      <a href="./ad-revenue-estimator.html" class="text-[10px] font-bold uppercase tracking-[0.16em] text-muted hover:text-accent">Open a Tool →</a>
+      <a href="./index.html" class="text-[10px] font-bold uppercase tracking-[0.16em] text-muted hover:text-accent">Tool Directory →</a>
     </nav>
 
     <header class="border-b-2 border-ink pb-8">
       <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Legal / Privacy</p>
       <h1 class="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">Privacy Policy</h1>
-      <p class="mt-4 text-sm text-muted">Last updated: 30 May 2026</p>
+      <p class="mt-4 text-sm text-muted">Last updated: 3 June 2026</p>
     </header>
 
     <main class="space-y-10 py-10 text-sm leading-relaxed">
@@ -43,28 +43,42 @@
         <h2 class="text-xl font-bold">Overview</h2>
         <p class="mt-3 text-muted">
           The Architect’s Loop provides browser-based utility tools at
-          <span class="text-ink">thearchitectsloop.com</span>. The current tools are designed
-          to calculate, convert, or generate reports within your browser without submitting the
-          values or files you enter to a The Architect’s Loop database.
+          <span class="text-ink">thearchitectsloop.com</span>. The toolkit is designed so calculations,
+          conversions, previews, and file handling run in your browser. The tools do not use a
+          The Architect’s Loop account system or database for the values and files you enter.
         </p>
       </section>
 
       <section>
-        <h2 class="text-xl font-bold">Information entered into the tools</h2>
+        <h2 class="text-xl font-bold">Tool processing</h2>
         <p class="mt-3 text-muted">
-          Inputs entered into the Ad Revenue Potential Estimator, Founder Website Visibility
-          Report, and Markdown to HTML &amp; PDF Converter are processed in your browser for
-          the purpose of generating on-screen results and downloadable outputs. The current
-          site does not include an account system or database that stores those inputs.
+          Inputs entered into public tools (including estimators, visibility reports, Markdown
+          conversion, schema generators, CSV workbench, SEO previews, and similar pages) are
+          processed locally in your browser to produce on-screen results, copyable code, or
+          downloadable files. Those inputs are not sent to a The Architect’s Loop server for
+          tool processing.
         </p>
       </section>
 
       <section>
-        <h2 class="text-xl font-bold">Files used in the Markdown converter</h2>
+        <h2 class="text-xl font-bold">Optional homepage email signup</h2>
         <p class="mt-3 text-muted">
-          Markdown files selected in the converter are read locally by your browser. The current
-          tool does not upload your Markdown text, generated HTML, plain text, or local graph data
-          to a The Architect’s Loop database.
+          The homepage offers an optional “Notify Me” form. If you choose to submit it, only your
+          email address is sent to
+          <a href="https://kabak.info/" class="text-ink underline underline-offset-2 hover:text-accent" rel="noopener noreferrer">Kabak.info</a>
+          (form endpoint <span class="text-ink">tal-notify-me</span>) so we can notify you about
+          new tools. You do not need to sign up to use any tool. Kabak’s own privacy terms apply
+          to that service.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-xl font-bold">Files and CSV data</h2>
+        <p class="mt-3 text-muted">
+          Tools such as the Markdown converter and CSV Workbench let you choose files from your
+          device. Those files are read locally in your browser with the File API. They are not
+          uploaded to The Architect’s Loop for processing. Do not use highly sensitive data unless
+          you accept processing on your device.
         </p>
       </section>
 
@@ -72,27 +86,29 @@
         <h2 class="text-xl font-bold">Third-party services</h2>
         <div class="mt-3 space-y-3 text-muted">
           <p>
-            The website loads Tailwind CSS from a third-party content delivery network for page
-            styling. When your browser retrieves that resource, the third-party provider may receive
-            ordinary technical request information such as IP address, browser data and requested URL.
+            Most pages load Tailwind CSS from a third-party CDN for styling. The Obsidian &amp;
+            Notes Toolkit may load Mermaid from a CDN to preview diagrams. When your browser
+            requests those resources, the provider may receive ordinary technical data (such as IP
+            address, browser type, and requested URL).
           </p>
           <p>
-            The optional PayPal support link takes you to PayPal when clicked. Any information you
-            provide there is governed by PayPal’s own policies, not this website.
+            The optional Payhip download library link takes you to Payhip when clicked. Any
+            information you provide there is governed by PayPal/Payhip policies.
           </p>
           <p>
-            If you contact us by email, your email message and address will be received and stored
-            through our email provider for the purpose of responding to your message.
+            If you contact us by email, your message is handled through our email provider for
+            the purpose of responding to you.
           </p>
         </div>
       </section>
 
       <section>
-        <h2 class="text-xl font-bold">Analytics and advertising</h2>
+        <h2 class="text-xl font-bold">Analytics, advertising, and UTM links</h2>
         <p class="mt-3 text-muted">
-          The current public pages do not include analytics scripts or programmatic advertising
-          code. If analytics or advertising technologies are introduced later, this policy will
-          be updated before or alongside that change.
+          The public toolkit pages do not include analytics scripts or programmatic advertising
+          code maintained by The Architect’s Loop. The UTM Link Builder only creates URLs you can
+          copy; it does not install tracking on your site. If you add analytics on your own
+          website, that is separate from these tools.
         </p>
       </section>
 
@@ -113,16 +129,16 @@
           <span>Visibility Checker</span>
           <span aria-hidden="true">→</span>
         </a>
-        <a href="./social-preview-meta-tag-generator.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent">
-          <span>Social Preview Generator</span>
+        <a href="./utm-link-builder.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent">
+          <span>UTM Link Builder</span>
           <span aria-hidden="true">→</span>
         </a>
-        <a href="./ad-revenue-estimator.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent">
-          <span>Ad Revenue Estimator</span>
+        <a href="./robots-txt-builder.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent">
+          <span>Robots.txt Builder</span>
           <span aria-hidden="true">→</span>
         </a>
-        <a href="./markdown-to-html-pdf-converter.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent">
-          <span>Markdown Converter</span>
+        <a href="./sitemap-xml-builder.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent">
+          <span>Sitemap Builder</span>
           <span aria-hidden="true">→</span>
         </a>
       </div>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEO Snippet Preview | The Architect’s Loop</title>
+  <meta name="description" content="Preview how a page title and meta description may appear in search results. Client-side SERP snippet preview tool." />
+  <link rel="canonical" href="https://thearchitectsloop.com/seo-snippet-preview.html" />
+  <link rel="icon" type="image/png" href="/images/tal favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{ink:'#0a0a0a',paper:'#f4f4f0',muted:'#6b6b6b',accent:'#1a56ff',good:'#166534',warn:'#b45309'}}}};</script>
+  <style>*{border-radius:0!important}::selection{background:#1a56ff;color:#f4f4f0}.serp-title{color:#1a0dab}.serp-url{color:#006621;font-size:14px}.serp-desc{color:#545454;font-size:14px;line-height:1.58}</style>
+</head>
+<body class="min-h-screen bg-paper text-ink antialiased">
+  <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+    <nav class="mb-8 flex flex-wrap justify-between gap-4 border-b border-ink/20 pb-4">
+      <a href="./" class="text-xs font-bold uppercase tracking-[0.2em] hover:text-accent">The Architect’s Loop</a>
+      <a href="./social-preview-meta-tag-generator.html" class="text-[10px] font-bold uppercase tracking-[0.16em] text-muted hover:text-accent">Social Preview →</a>
+    </nav>
+    <header class="mb-10 border-b-2 border-ink pb-6">
+      <p class="text-xs uppercase tracking-[0.2em] text-muted">Client-side only · Indicative preview</p>
+      <h1 class="mt-2 text-3xl font-bold sm:text-4xl">SEO Snippet Preview</h1>
+      <p class="mt-3 text-sm text-muted">Approximate Google-style result preview. Real listings vary by query, device, and search features.</p>
+    </header>
+    <main class="grid gap-8 lg:grid-cols-2">
+      <section class="border-2 border-ink bg-white p-6 space-y-4">
+        <div>
+          <label class="mb-1 block text-xs font-bold uppercase tracking-wider" for="title">Page title</label>
+          <input id="title" type="text" maxlength="120" class="w-full border-2 border-ink bg-paper px-3 py-2 text-sm" placeholder="Free Founder Utilities Toolkit" />
+          <p id="titleCount" class="mt-1 text-[10px] text-muted">0 characters</p>
+        </div>
+        <div>
+          <label class="mb-1 block text-xs font-bold uppercase tracking-wider" for="url">Page URL</label>
+          <input id="url" type="url" class="w-full border-2 border-ink bg-paper px-3 py-2 text-sm" placeholder="https://thearchitectsloop.com/" />
+        </div>
+        <div>
+          <label class="mb-1 block text-xs font-bold uppercase tracking-wider" for="desc">Meta description</label>
+          <textarea id="desc" rows="4" maxlength="320" class="w-full border-2 border-ink bg-paper px-3 py-2 text-sm" placeholder="Short description for search results…"></textarea>
+          <p id="descCount" class="mt-1 text-[10px] text-muted">0 characters</p>
+        </div>
+      </section>
+      <section class="border-2 border-ink bg-white p-6">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-muted mb-4">Preview</p>
+        <div class="max-w-xl font-[Arial,sans-serif]">
+          <p id="pTitle" class="serp-title text-xl leading-snug">Page title</p>
+          <p id="pUrl" class="serp-url mt-1">example.com</p>
+          <p id="pDesc" class="serp-desc mt-1">Meta description appears here.</p>
+        </div>
+        <ul id="hints" class="mt-6 space-y-2 text-xs text-muted"></ul>
+      </section>
+    </main>
+
+    <section class="mt-12 border-t border-ink/20 pt-10 sm:mt-16 sm:pt-12" aria-labelledby="relatedToolsHeading">
+      <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Related Founder Tools</p>
+      <h2 id="relatedToolsHeading" class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Continue the website setup workflow</h2>
+      <div class="mt-6 grid gap-3 md:grid-cols-3">
+        <a href="./social-preview-meta-tag-generator.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Social Preview Generator</span><span aria-hidden="true">→</span></a>
+        <a href="./utm-link-builder.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>UTM Link Builder</span><span aria-hidden="true">→</span></a>
+        <a href="./sitemap-xml-builder.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Sitemap Builder</span><span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <footer class="mt-12 border-t border-ink/20 pt-6 text-center text-[10px] text-muted">
+      <p>A tool by The Architect’s Loop · <a href="./privacy.html" class="underline hover:text-accent">Privacy</a></p>
+    </footer>
+  </div>
+  <script>
+(function(){
+  var title=document.getElementById('title'),url=document.getElementById('url'),desc=document.getElementById('desc');
+  var pTitle=document.getElementById('pTitle'),pUrl=document.getElementById('pUrl'),pDesc=document.getElementById('pDesc'),hints=document.getElementById('hints');
+  function domain(u){try{return new URL(u).hostname.replace(/^www\./,'');}catch(e){return 'example.com';}}
+  function path(u){try{var x=new URL(u);return (x.pathname+x.search)||'/';}catch(e){return '/';}}
+  function render(){
+    var t=title.value.trim()||'Page title',d=desc.value.trim()||'Meta description appears here.',u=url.value.trim();
+    pTitle.textContent=t.length>60?t.slice(0,57)+'…':t;
+    pDesc.textContent=d.length>160?d.slice(0,157)+'…':d;
+    pUrl.textContent=(domain(u)||'example.com')+(path(u)||'/');
+    document.getElementById('titleCount').textContent=t.length+' characters'+(t.length>60?' · may truncate in results':'');
+    document.getElementById('descCount').textContent=d.length+' characters'+(d.length>160?' · may truncate in results':'');
+    var h=[];
+    if(t.length<30)h.push('Title is quite short — consider a clearer benefit.');
+    if(d.length<70)h.push('Description is short — room to explain the page.');
+    if(!u)h.push('Add a URL to preview the green display path.');
+    hints.innerHTML=h.map(function(x){return '<li>• '+x+'</li>';}).join('')||'<li>• Looks reasonable for a basic snippet.</li>';
+  }
+  [title,url,desc].forEach(function(el){el.addEventListener('input',render);});
+  render();
+})();
+  </script>
+</body>
+</html>

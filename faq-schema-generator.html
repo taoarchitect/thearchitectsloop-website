@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ Schema Generator | The Architect’s Loop</title>
+  <meta name="description" content="Generate FAQPage JSON-LD schema from questions and answers. Copy-paste structured data for your site." />
+  <link rel="canonical" href="https://thearchitectsloop.com/faq-schema-generator.html" />
+  <link rel="icon" type="image/png" href="/images/tal favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{ink:'#0a0a0a',paper:'#f4f4f0',muted:'#6b6b6b',accent:'#1a56ff'}}}};</script>
+  <style>*{border-radius:0!important}pre{white-space:pre-wrap;font-size:11px}</style>
+</head>
+<body class="min-h-screen bg-paper text-ink antialiased">
+  <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+    <nav class="mb-8 border-b border-ink/20 pb-4"><a href="./" class="text-xs font-bold uppercase tracking-[0.2em] hover:text-accent">The Architect’s Loop</a></nav>
+    <header class="mb-8 border-b-2 border-ink pb-6">
+      <h1 class="text-3xl font-bold">FAQ Schema Generator</h1>
+      <p class="mt-2 text-sm text-muted">Build FAQPage JSON-LD. Paste into a <code>&lt;script type="application/ld+json"&gt;</code> block. Verify in Google’s rich results tools before publishing.</p>
+      <div class="mt-4 flex gap-2">
+        <button type="button" id="addBtn" class="border-2 border-ink bg-paper px-3 py-2 text-xs font-bold uppercase hover:bg-ink hover:text-paper">Add Q&amp;A</button>
+        <button type="button" id="copyBtn" class="border-2 border-ink bg-ink px-3 py-2 text-xs font-bold uppercase text-paper hover:bg-accent">Copy JSON-LD</button>
+      </div>
+    </header>
+    <main class="grid gap-8 lg:grid-cols-2">
+      <div id="pairs" class="space-y-4"></div>
+      <pre id="out" class="border-2 border-ink bg-white p-4"></pre>
+    </main>
+
+    <section class="mt-12 border-t border-ink/20 pt-10 sm:mt-16 sm:pt-12" aria-labelledby="relatedToolsHeading">
+      <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Related Founder Tools</p>
+      <h2 id="relatedToolsHeading" class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Continue the website setup workflow</h2>
+      <div class="mt-6 grid gap-3 md:grid-cols-3">
+        <a href="./article-schema-generator.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Article Schema</span><span aria-hidden="true">→</span></a>
+        <a href="./seo-snippet-preview.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>SEO Snippet Preview</span><span aria-hidden="true">→</span></a>
+        <a href="./frontmatter-builder.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Frontmatter Builder</span><span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <footer class="mt-12 border-t border-ink/20 pt-6 text-center text-[10px] text-muted">
+      <p>A tool by The Architect’s Loop · <a href="./privacy.html" class="underline hover:text-accent">Privacy</a></p>
+    </footer>
+  </div>
+  <script>
+(function(){
+  var pairs=document.getElementById('pairs'),out=document.getElementById('out');
+  function row(q,a){
+    var w=document.createElement('div');w.className='border-2 border-ink bg-white p-4 space-y-2';
+    w.innerHTML='<input class="q w-full border-2 border-ink bg-paper px-2 py-2 text-sm" placeholder="Question" value="'+(q||'')+'"/><textarea class="a w-full border-2 border-ink bg-paper px-2 py-2 text-sm" rows="2" placeholder="Answer">'+(a||'')+'</textarea><button type="button" class="rm text-[10px] font-bold uppercase text-muted hover:text-accent">Remove</button>';
+    w.querySelector('.rm').addEventListener('click',function(){w.remove();render();});
+    w.querySelectorAll('input,textarea').forEach(function(el){el.addEventListener('input',render);});
+    pairs.appendChild(w);
+  }
+  function render(){
+    var items=[].map.call(pairs.querySelectorAll('.border-2'),function(w){
+      var q=w.querySelector('.q').value.trim(),a=w.querySelector('.a').value.trim();
+      return q&&a?{q:q,a:a}:null;
+    }).filter(Boolean);
+    var schema={'@context':'https://schema.org','@type':'FAQPage',mainEntity:items.map(function(i){return{'@type':'Question',name:i.q,acceptedAnswer:{'@type':'Answer',text:i.a}};})};
+    out.textContent='<script type="application/ld+json">\n'+JSON.stringify(schema,null,2)+'\n<\/script>';
+  }
+  document.getElementById('addBtn').addEventListener('click',function(){row('','');render();});
+  document.getElementById('copyBtn').addEventListener('click',function(){navigator.clipboard.writeText(out.textContent);});
+  row('What is this tool?','A client-side FAQ schema generator.');
+  render();
+})();
+  </script>
+</body>
+</html>

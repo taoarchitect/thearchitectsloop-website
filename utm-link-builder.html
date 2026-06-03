@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UTM Link Builder | The Architect’s Loop</title>
+  <meta name="description" content="Build campaign URLs with UTM parameters for analytics. Free client-side UTM link builder — no accounts, no tracking, no data leaves your browser." />
+  <link rel="canonical" href="https://thearchitectsloop.com/utm-link-builder.html" />
+  <link rel="icon" type="image/png" href="/images/tal favicon.png" />
+  <link rel="shortcut icon" type="image/png" href="/images/tal favicon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="The Architect’s Loop" />
+  <meta property="og:title" content="UTM Link Builder | The Architect’s Loop" />
+  <meta property="og:description" content="Build campaign URLs with UTM parameters in your browser. Privacy-first, no signup." />
+  <meta property="og:url" content="https://thearchitectsloop.com/utm-link-builder.html" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="UTM Link Builder | The Architect’s Loop" />
+  <meta name="twitter:description" content="Build campaign URLs with UTM parameters in your browser." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0a0a0a',
+            paper: '#f4f4f0',
+            muted: '#6b6b6b',
+            accent: '#1a56ff',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    * { border-radius: 0 !important; }
+    ::selection { background: #1a56ff; color: #f4f4f0; }
+    input, select, button, textarea { border-radius: 0; }
+    .tool-link:focus-visible,
+    .text-link:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 2px solid #1a56ff;
+      outline-offset: 3px;
+    }
+    #outputUrl { word-break: break-all; }
+  </style>
+</head>
+<body class="min-h-screen bg-paper text-ink antialiased">
+  <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+    <nav class="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-ink/20 pb-4" aria-label="Toolkit navigation">
+      <a href="./" class="text-xs font-bold uppercase tracking-[0.2em] hover:text-accent">The Architect’s Loop</a>
+      <a href="./social-preview-meta-tag-generator.html" class="text-[10px] font-bold uppercase tracking-[0.16em] text-muted hover:text-accent">
+        Social Preview Generator →
+      </a>
+    </nav>
+
+    <header class="mb-10 border-b-2 border-ink pb-6">
+      <p class="mb-2 text-xs uppercase tracking-[0.2em] text-muted">Client-side only · No data leaves your browser</p>
+      <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">UTM Link Builder</h1>
+      <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+        Add standard UTM parameters to any page URL so analytics tools can group traffic by source,
+        medium, and campaign. Built for founders sharing tool pages, guides, and landing links.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <button type="button" id="copyUrlBtn"
+          class="border-2 border-ink bg-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-paper transition-colors hover:border-accent hover:bg-accent">
+          Copy Full URL
+        </button>
+        <button type="button" id="clearBtn"
+          class="border-2 border-ink bg-paper px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors hover:bg-ink hover:text-paper">
+          Clear
+        </button>
+      </div>
+      <p id="feedback" class="mt-2 hidden text-xs font-bold text-accent" role="status"></p>
+    </header>
+
+    <main class="grid gap-10 lg:grid-cols-2 lg:gap-14">
+      <section class="border-2 border-ink bg-white p-6 sm:p-8" aria-labelledby="inputs-heading">
+        <h2 id="inputs-heading" class="mb-6 text-lg font-bold uppercase tracking-wide">Campaign fields</h2>
+
+        <form id="utm-form" class="space-y-5" onsubmit="return false;">
+          <div>
+            <label for="baseUrl" class="mb-2 block text-xs font-bold uppercase tracking-wider">Page URL (required)</label>
+            <input id="baseUrl" type="url" required placeholder="https://thearchitectsloop.com/ad-revenue-estimator.html"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent" />
+            <p class="mt-2 text-[10px] leading-relaxed text-muted">Include https://. Existing UTM tags on this URL are replaced when you build a new link.</p>
+          </div>
+
+          <div>
+            <label for="utm_source" class="mb-2 block text-xs font-bold uppercase tracking-wider">utm_source</label>
+            <input id="utm_source" type="text" placeholder="twitter, newsletter, linkedin"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent" />
+            <p class="mt-1 text-[10px] text-muted">Where the traffic comes from (platform or site).</p>
+          </div>
+
+          <div>
+            <label for="utm_medium" class="mb-2 block text-xs font-bold uppercase tracking-wider">utm_medium</label>
+            <input id="utm_medium" type="text" list="medium-suggestions" placeholder="social, email, cpc"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent" />
+            <datalist id="medium-suggestions">
+              <option value="social"></option>
+              <option value="email"></option>
+              <option value="cpc"></option>
+              <option value="organic"></option>
+              <option value="referral"></option>
+            </datalist>
+            <p class="mt-1 text-[10px] text-muted">Marketing medium (channel type).</p>
+          </div>
+
+          <div>
+            <label for="utm_campaign" class="mb-2 block text-xs font-bold uppercase tracking-wider">utm_campaign</label>
+            <input id="utm_campaign" type="text" placeholder="june_tools, visibility_launch"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent" />
+            <p class="mt-1 text-[10px] text-muted">Campaign name you will recognize in reports.</p>
+          </div>
+
+          <div>
+            <label for="utm_content" class="mb-2 block text-xs font-bold uppercase tracking-wider">utm_content <span class="font-normal text-muted">(optional)</span></label>
+            <input id="utm_content" type="text" placeholder="bio_link, footer_cta"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent" />
+            <p class="mt-1 text-[10px] text-muted">Differentiate ads or links pointing to the same URL.</p>
+          </div>
+
+          <div>
+            <label for="utm_term" class="mb-2 block text-xs font-bold uppercase tracking-wider">utm_term <span class="font-normal text-muted">(optional)</span></label>
+            <input id="utm_term" type="text" placeholder="paid keyword (optional)"
+              class="w-full border-2 border-ink bg-paper px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent" />
+            <p class="mt-1 text-[10px] text-muted">Often used for paid search keywords.</p>
+          </div>
+        </form>
+      </section>
+
+      <section class="border-2 border-ink bg-white p-6 sm:p-8" aria-labelledby="output-heading">
+        <h2 id="output-heading" class="mb-6 text-lg font-bold uppercase tracking-wide">Your campaign URL</h2>
+
+        <div class="border-2 border-ink bg-paper p-4">
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Full link</p>
+          <p id="outputUrl" class="mt-3 text-sm font-bold leading-relaxed text-ink">Enter a page URL to generate your link.</p>
+        </div>
+
+        <div class="mt-6 space-y-3 text-sm" id="paramPreview" aria-live="polite">
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Parameters</p>
+          <p id="previewEmpty" class="text-muted">No UTM parameters yet.</p>
+          <ul id="previewList" class="hidden space-y-2"></ul>
+        </div>
+
+        <div class="mt-8 border-t border-ink/15 pt-6 text-sm leading-relaxed text-muted">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-ink">How to use this link</h3>
+          <p class="mt-3">Paste the full URL into social posts, newsletters, or bios. Your analytics tool (if installed on the destination site) can read these parameters — this builder does not install tracking on its own.</p>
+        </div>
+      </section>
+    </main>
+
+    <section class="mt-12 border-2 border-ink bg-white p-6 sm:p-8">
+      <h2 class="text-sm font-bold uppercase tracking-wide">Frequently asked questions</h2>
+      <div class="mt-4 space-y-4 text-sm leading-relaxed">
+        <div>
+          <p class="font-bold text-ink">Does this tool send my URL anywhere?</p>
+          <p class="mt-1 text-muted">No. The link is built entirely in your browser.</p>
+        </div>
+        <div>
+          <p class="font-bold text-ink">Do I need Google Analytics to use UTMs?</p>
+          <p class="mt-1 text-muted">No. UTMs are just URL parameters. They are useful when your site or landing page already uses an analytics product that reads them.</p>
+        </div>
+        <div>
+          <p class="font-bold text-ink">What if my URL already has UTM parameters?</p>
+          <p class="mt-1 text-muted">This builder removes existing utm_* parameters on the same URL, then applies the values you enter above.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-12 border-t border-ink/20 pt-10 sm:mt-16 sm:pt-12" aria-labelledby="relatedToolsHeading">
+      <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Related Founder Tools</p>
+      <h2 id="relatedToolsHeading" class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Continue the website setup workflow</h2>
+      <div class="mt-6 grid gap-3 md:grid-cols-3">
+        <a href="./founder-website-visibility-report.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent">
+          <span>Visibility Checker</span>
+          <span aria-hidden="true">→</span>
+        </a>
+        <a href="./social-preview-meta-tag-generator.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent">
+          <span>Social Preview Generator</span>
+          <span aria-hidden="true">→</span>
+        </a>
+        <a href="./ad-revenue-estimator.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent">
+          <span>Ad Revenue Estimator</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+
+    <footer class="mt-12 space-y-4 border-t border-ink/20 pt-6 text-xs text-muted">
+      <p>Link building runs in browser memory. No form submission or analytics. Tailwind CSS loads from CDN for styling only.</p>
+      <div class="space-y-2 border-t border-ink/10 pt-4 text-center">
+        <p class="text-xs font-medium text-ink">A tool by The Architect’s Loop</p>
+        <p class="text-[10px] text-muted">
+          Contact: <a href="mailto:thearchitectsloop@proton.me" class="text-link underline underline-offset-2 hover:text-accent">thearchitectsloop@proton.me</a>
+        </p>
+        <nav aria-label="Legal links" class="text-[10px] text-muted">
+          <a href="./privacy.html" class="text-link underline underline-offset-2 hover:text-accent">Privacy</a>
+          <span aria-hidden="true"> · </span>
+          <a href="./disclaimer.html" class="text-link underline underline-offset-2 hover:text-accent">Disclaimer</a>
+        </nav>
+        <p class="text-[10px] text-muted">© 2026 The Architect’s Loop. Built by Tun Bakyu.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+      var fields = {
+        baseUrl: document.getElementById('baseUrl'),
+        utm_source: document.getElementById('utm_source'),
+        utm_medium: document.getElementById('utm_medium'),
+        utm_campaign: document.getElementById('utm_campaign'),
+        utm_content: document.getElementById('utm_content'),
+        utm_term: document.getElementById('utm_term'),
+      };
+      var outputUrl = document.getElementById('outputUrl');
+      var previewList = document.getElementById('previewList');
+      var previewEmpty = document.getElementById('previewEmpty');
+      var feedback = document.getElementById('feedback');
+      var copyUrlBtn = document.getElementById('copyUrlBtn');
+      var clearBtn = document.getElementById('clearBtn');
+
+      function trim(value) {
+        return String(value || '').trim();
+      }
+
+      function parseBaseUrl(raw) {
+        var value = trim(raw);
+        if (!value) return null;
+        try {
+          return new URL(value);
+        } catch (e) {
+          try {
+            return new URL('https://' + value.replace(/^\/+/, ''));
+          } catch (e2) {
+            return null;
+          }
+        }
+      }
+
+      function getUtmValues() {
+        return {
+          utm_source: trim(fields.utm_source.value),
+          utm_medium: trim(fields.utm_medium.value),
+          utm_campaign: trim(fields.utm_campaign.value),
+          utm_content: trim(fields.utm_content.value),
+          utm_term: trim(fields.utm_term.value),
+        };
+      }
+
+      function buildUrl() {
+        var parsed = parseBaseUrl(fields.baseUrl.value);
+        if (!parsed) {
+          return { ok: false, message: 'Enter a valid page URL to generate your link.' };
+        }
+
+        UTM_KEYS.forEach(function (key) {
+          parsed.searchParams.delete(key);
+        });
+
+        var utm = getUtmValues();
+        var hasAny = false;
+        UTM_KEYS.forEach(function (key) {
+          if (utm[key]) {
+            parsed.searchParams.set(key, utm[key]);
+            hasAny = true;
+          }
+        });
+
+        if (!hasAny) {
+          return { ok: true, url: parsed.toString(), params: [], note: 'Add at least one UTM field to tag this link for analytics.' };
+        }
+
+        var params = UTM_KEYS.filter(function (key) { return utm[key]; }).map(function (key) {
+          return { key: key, value: utm[key] };
+        });
+
+        return { ok: true, url: parsed.toString(), params: params, note: '' };
+      }
+
+      function renderPreview() {
+        var result = buildUrl();
+        previewList.innerHTML = '';
+        previewList.classList.add('hidden');
+        previewEmpty.classList.add('hidden');
+
+        if (!result.ok) {
+          outputUrl.textContent = result.message;
+          previewEmpty.textContent = 'Waiting for a valid page URL.';
+          previewEmpty.classList.remove('hidden');
+          return;
+        }
+
+        outputUrl.textContent = result.url;
+
+        if (result.note) {
+          previewEmpty.textContent = result.note;
+          previewEmpty.classList.remove('hidden');
+          return;
+        }
+
+        result.params.forEach(function (item) {
+          var li = document.createElement('li');
+          li.className = 'flex flex-wrap gap-2 border border-ink/15 bg-paper px-3 py-2';
+          li.innerHTML = '<span class="font-bold text-ink">' + item.key + '</span><span class="text-muted">' + escapeHtml(item.value) + '</span>';
+          previewList.appendChild(li);
+        });
+        previewList.classList.remove('hidden');
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function showFeedback(message) {
+        feedback.textContent = message;
+        feedback.classList.remove('hidden');
+        window.setTimeout(function () {
+          feedback.classList.add('hidden');
+        }, 2200);
+      }
+
+      Object.keys(fields).forEach(function (id) {
+        fields[id].addEventListener('input', renderPreview);
+        fields[id].addEventListener('change', renderPreview);
+      });
+
+      copyUrlBtn.addEventListener('click', function () {
+        var result = buildUrl();
+        if (!result.ok) {
+          showFeedback('Enter a valid URL first.');
+          return;
+        }
+        var text = result.url;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () {
+            showFeedback('Copied to clipboard.');
+          }).catch(function () {
+            fallbackCopy(text);
+          });
+        } else {
+          fallbackCopy(text);
+        }
+      });
+
+      function fallbackCopy(text) {
+        var area = document.createElement('textarea');
+        area.value = text;
+        area.setAttribute('readonly', '');
+        area.style.position = 'fixed';
+        area.style.left = '-9999px';
+        document.body.appendChild(area);
+        area.select();
+        try {
+          document.execCommand('copy');
+          showFeedback('Copied to clipboard.');
+        } catch (e) {
+          showFeedback('Copy failed. Select the URL manually.');
+        }
+        document.body.removeChild(area);
+      }
+
+      clearBtn.addEventListener('click', function () {
+        fields.baseUrl.value = '';
+        fields.utm_source.value = '';
+        fields.utm_medium.value = '';
+        fields.utm_campaign.value = '';
+        fields.utm_content.value = '';
+        fields.utm_term.value = '';
+        renderPreview();
+        showFeedback('Fields cleared.');
+      });
+
+      renderPreview();
+    })();
+  </script>
+</body>
+</html>

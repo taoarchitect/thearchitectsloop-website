@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Obsidian & Notes Toolkit | The Architect’s Loop</title>
+  <meta name="description" content="Obsidian vault starter files, note templates, and Mermaid diagram helper. Client-side knowledge management tools combined." />
+  <link rel="canonical" href="https://thearchitectsloop.com/obsidian-toolkit.html" />
+  <link rel="icon" type="image/png" href="/images/tal favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>tailwind.config={theme:{extend:{colors:{ink:'#0a0a0a',paper:'#f4f4f0',muted:'#6b6b6b',accent:'#1a56ff'}}}};</script>
+  <style>*{border-radius:0!important}.tab-btn[aria-selected="true"]{background:#0a0a0a;color:#f4f4f0}</style>
+</head>
+<body class="min-h-screen bg-paper text-ink antialiased">
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+    <nav class="mb-8 border-b border-ink/20 pb-4"><a href="./" class="text-xs font-bold uppercase tracking-[0.2em] hover:text-accent">The Architect’s Loop</a></nav>
+    <header class="mb-8 border-b-2 border-ink pb-6">
+      <h1 class="text-3xl font-bold">Obsidian &amp; Notes Toolkit</h1>
+      <p class="mt-2 text-sm text-muted">Vault starter pack, note templates, and Mermaid diagrams. Combines Obsidian Vault Starter, Note Template Generator, Mermaid Diagram Generator, and note frontmatter helpers.</p>
+    </header>
+    <div class="mb-4 flex flex-wrap gap-2" role="tablist">
+      <button type="button" class="tab-btn border-2 border-ink px-2 py-2 text-[10px] font-bold uppercase" data-tab="vault" aria-selected="true">Vault Starter</button>
+      <button type="button" class="tab-btn border-2 border-ink px-2 py-2 text-[10px] font-bold uppercase" data-tab="templates">Templates</button>
+      <button type="button" class="tab-btn border-2 border-ink px-2 py-2 text-[10px] font-bold uppercase" data-tab="mermaid">Mermaid</button>
+    </div>
+    <div id="panel-vault" class="tab-panel border-2 border-ink bg-white p-6">
+      <p class="text-sm text-muted mb-4">Download starter Markdown files for a minimal Obsidian vault structure.</p>
+      <div class="flex flex-wrap gap-2" id="vaultDownloads"></div>
+      <pre class="mt-6 border-2 border-ink bg-paper p-4 text-xs" id="vaultPreview"></pre>
+    </div>
+    <div id="panel-templates" class="tab-panel hidden border-2 border-ink bg-white p-6">
+      <label class="text-xs font-bold uppercase">Template</label>
+      <select id="tplSelect" class="mt-2 w-full max-w-md border-2 border-ink bg-paper px-3 py-2 text-sm">
+        <option value="daily">Daily note</option>
+        <option value="meeting">Meeting note</option>
+        <option value="project">Project hub</option>
+        <option value="idea">Idea capture</option>
+      </select>
+      <button type="button" id="copyTpl" class="mt-4 border-2 border-ink bg-ink px-4 py-2 text-xs font-bold uppercase text-paper">Copy template</button>
+      <pre id="tplOut" class="mt-4 border-2 border-ink bg-paper p-4 text-xs whitespace-pre-wrap"></pre>
+    </div>
+    <div id="panel-mermaid" class="tab-panel hidden grid gap-6 lg:grid-cols-2">
+      <div>
+        <label class="text-xs font-bold uppercase">Mermaid source</label>
+        <textarea id="mermaidSrc" rows="12" class="mt-2 w-full border-2 border-ink bg-paper p-2 text-sm font-mono">flowchart LR
+  A[Start] --> B{Decision}
+  B -->|Yes| C[Ship]
+  B -->|No| D[Iterate]</textarea>
+        <button type="button" id="copyMermaid" class="mt-2 border-2 border-ink bg-ink px-4 py-2 text-xs font-bold uppercase text-paper">Copy code block</button>
+      </div>
+      <div class="border-2 border-ink bg-paper p-4 overflow-auto" id="mermaidPreview"></div>
+    </div>
+
+    <section class="mt-12 border-t border-ink/20 pt-10 sm:mt-16 sm:pt-12" aria-labelledby="relatedToolsHeading">
+      <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Related Founder Tools</p>
+      <h2 id="relatedToolsHeading" class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Continue the website setup workflow</h2>
+      <div class="mt-6 grid gap-3 md:grid-cols-3">
+        <a href="./frontmatter-builder.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Frontmatter Builder</span><span aria-hidden="true">→</span></a>
+        <a href="./markdown-to-html-pdf-converter.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Markdown Converter</span><span aria-hidden="true">→</span></a>
+        <a href="./markdown-table-generator.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Markdown Table Generator</span><span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <footer class="mt-12 border-t border-ink/20 pt-6 text-center text-[10px] text-muted">
+      <p>A tool by The Architect’s Loop · <a href="./privacy.html" class="underline hover:text-accent">Privacy</a></p>
+    </footer>
+  </div>
+  <script>
+(function(){
+  mermaid.initialize({ startOnLoad: false, theme: 'neutral', securityLevel: 'loose' });
+  var tabs=document.querySelectorAll('.tab-btn');
+  var panels={vault:document.getElementById('panel-vault'),templates:document.getElementById('panel-templates'),mermaid:document.getElementById('panel-mermaid')};
+  tabs.forEach(function(btn){btn.addEventListener('click',function(){var t=btn.getAttribute('data-tab');tabs.forEach(function(b){b.setAttribute('aria-selected',b===btn?'true':'false');});Object.keys(panels).forEach(function(k){panels[k].classList.toggle('hidden',k!==t);});if(t==='mermaid')renderMermaid();});});
+  var vaultFiles={
+    'README.md':'# Vault\n\nStarter vault by The Architect\'s Loop.\n\n## Folders\n- Inbox\n- Projects\n- Templates',
+    'Inbox.md':'# Inbox\n\nCapture quick notes here.',
+    'Templates/Daily.md':'---\ntags: [daily]\n---\n\n# {{date}}\n\n## Focus\n\n## Notes\n',
+    'Projects/Project Hub.md':'# Project name\n\n## Goal\n\n## Next actions\n- [ ] '
+  };
+  var box=document.getElementById('vaultDownloads'),prev=document.getElementById('vaultPreview');
+  Object.keys(vaultFiles).forEach(function(name){
+    var btn=document.createElement('button');
+    btn.type='button';btn.className='border-2 border-ink bg-paper px-3 py-2 text-[10px] font-bold uppercase hover:bg-ink hover:text-paper';
+    btn.textContent='Download '+name;
+    btn.addEventListener('click',function(){
+      var b=new Blob([vaultFiles[name]],{type:'text/markdown'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download=name.replace(/\//g,'-');a.click();URL.revokeObjectURL(u);
+      prev.textContent=vaultFiles[name];
+    });
+    box.appendChild(btn);
+  });
+  prev.textContent=vaultFiles['README.md'];
+  var templates={
+    daily:'# {{date}}\n\n## Top 3\n1.\n2.\n3.\n\n## Log\n',
+    meeting:'# Meeting: \n\n**Date:** \n**Attendees:** \n\n## Agenda\n\n## Notes\n\n## Actions\n- [ ] ',
+    project:'# Project: \n\n## Outcome\n\n## Status\n\n## Links\n\n## Tasks\n- [ ] ',
+    idea:'# Idea: \n\n## Problem\n\n## Sketch\n\n## Next step\n'
+  };
+  function showTpl(){document.getElementById('tplOut').textContent=templates[document.getElementById('tplSelect').value];}
+  document.getElementById('tplSelect').addEventListener('change',showTpl);
+  document.getElementById('copyTpl').addEventListener('click',function(){navigator.clipboard.writeText(document.getElementById('tplOut').textContent);});
+  showTpl();
+  var mermaidSrc=document.getElementById('mermaidSrc'),mermaidPreview=document.getElementById('mermaidPreview');
+  function renderMermaid(){
+    var src=mermaidSrc.value.trim();
+    mermaidPreview.innerHTML='';
+    mermaid.render('mmd'+Date.now(),src).then(function(r){mermaidPreview.innerHTML=r.svg;}).catch(function(err){mermaidPreview.textContent='Diagram error: '+err.message;});
+  }
+  mermaidSrc.addEventListener('input',function(){clearTimeout(window._mmdT);window._mmdT=setTimeout(renderMermaid,400);});
+  document.getElementById('copyMermaid').addEventListener('click',function(){navigator.clipboard.writeText('```mermaid\n'+mermaidSrc.value.trim()+'\n```');});
+  renderMermaid();
+})();
+  </script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSV Workbench | The Architect’s Loop</title>
+  <meta name="description" content="Upload CSV files to merge, clean, dedupe, or convert to JSON in your browser. No server upload — files stay on your device." />
+  <link rel="canonical" href="https://thearchitectsloop.com/csv-workbench.html" />
+  <link rel="icon" type="image/png" href="/images/tal favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{ink:'#0a0a0a',paper:'#f4f4f0',muted:'#6b6b6b',accent:'#1a56ff'}}}};</script>
+  <style>
+    *{border-radius:0!important}
+    .tab-btn[aria-selected="true"]{background:#0a0a0a;color:#f4f4f0}
+    textarea{font-family:ui-monospace,monospace;font-size:12px}
+    input[type="file"]{font-size:11px}
+  </style>
+</head>
+<body class="min-h-screen bg-paper text-ink antialiased">
+  <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+    <nav class="mb-8 border-b border-ink/20 pb-4"><a href="./" class="text-xs font-bold uppercase tracking-[0.2em] hover:text-accent">The Architect’s Loop</a></nav>
+    <header class="mb-8 border-b-2 border-ink pb-6">
+      <h1 class="text-3xl font-bold">CSV Workbench</h1>
+      <p class="mt-2 max-w-2xl text-sm text-muted">
+        Upload <code class="font-bold text-ink">.csv</code> files from your computer. Merge, clean, remove duplicates, or convert to JSON.
+        Processing runs in your browser — files are not sent to a server.
+      </p>
+    </header>
+    <div class="mb-4 flex flex-wrap gap-2" role="tablist">
+      <button type="button" class="tab-btn border-2 border-ink px-2 py-2 text-[10px] font-bold uppercase" data-tab="merge" aria-selected="true">Merge</button>
+      <button type="button" class="tab-btn border-2 border-ink px-2 py-2 text-[10px] font-bold uppercase" data-tab="clean">Clean</button>
+      <button type="button" class="tab-btn border-2 border-ink px-2 py-2 text-[10px] font-bold uppercase" data-tab="dedupe">Dedupe</button>
+      <button type="button" class="tab-btn border-2 border-ink px-2 py-2 text-[10px] font-bold uppercase" data-tab="csv2json">CSV → JSON</button>
+      <button type="button" class="tab-btn border-2 border-ink px-2 py-2 text-[10px] font-bold uppercase" data-tab="json2csv">JSON → CSV</button>
+    </div>
+
+    <div id="panel-merge" class="tab-panel border-2 border-ink bg-white p-6">
+      <p class="mb-4 text-xs text-muted">Upload two CSV files with the same column headers (or compatible rows). Row 1 is treated as the header from file A.</p>
+      <div class="grid gap-6 lg:grid-cols-2">
+        <div>
+          <label class="text-xs font-bold uppercase">CSV file A</label>
+          <input type="file" id="fileA" accept=".csv,text/csv,text/plain" class="mt-2 block w-full border-2 border-ink bg-paper px-3 py-2" />
+          <p id="nameA" class="mt-1 text-[10px] text-muted">No file chosen</p>
+          <textarea id="csvA" rows="6" class="mt-2 w-full border-2 border-ink bg-paper p-2" placeholder="Preview after upload…" readonly></textarea>
+        </div>
+        <div>
+          <label class="text-xs font-bold uppercase">CSV file B</label>
+          <input type="file" id="fileB" accept=".csv,text/csv,text/plain" class="mt-2 block w-full border-2 border-ink bg-paper px-3 py-2" />
+          <p id="nameB" class="mt-1 text-[10px] text-muted">No file chosen</p>
+          <textarea id="csvB" rows="6" class="mt-2 w-full border-2 border-ink bg-paper p-2" placeholder="Preview after upload…" readonly></textarea>
+        </div>
+      </div>
+      <button type="button" id="runMerge" class="mt-4 border-2 border-ink bg-ink px-4 py-2 text-xs font-bold uppercase text-paper hover:bg-accent hover:border-accent">Merge rows</button>
+    </div>
+
+    <div id="panel-clean" class="tab-panel hidden border-2 border-ink bg-white p-6">
+      <label class="text-xs font-bold uppercase">Upload CSV file</label>
+      <input type="file" id="fileClean" accept=".csv,text/csv,text/plain" class="mt-2 block w-full max-w-md border-2 border-ink bg-paper px-3 py-2" />
+      <p id="nameClean" class="mt-1 text-[10px] text-muted">No file chosen</p>
+      <p class="mt-4 text-xs text-muted">Trims cells and removes completely empty rows. You can edit below before running clean.</p>
+      <textarea id="csvClean" rows="10" class="mt-2 w-full border-2 border-ink bg-paper p-2" placeholder="Upload a file or paste CSV to edit…"></textarea>
+      <button type="button" id="runClean" class="mt-4 border-2 border-ink bg-ink px-4 py-2 text-xs font-bold uppercase text-paper hover:bg-accent hover:border-accent">Trim &amp; drop empty rows</button>
+    </div>
+
+    <div id="panel-dedupe" class="tab-panel hidden border-2 border-ink bg-white p-6">
+      <label class="text-xs font-bold uppercase">Upload CSV file</label>
+      <input type="file" id="fileDedupe" accept=".csv,text/csv,text/plain" class="mt-2 block w-full max-w-md border-2 border-ink bg-paper px-3 py-2" />
+      <p id="nameDedupe" class="mt-1 text-[10px] text-muted">No file chosen</p>
+      <textarea id="csvDedupe" rows="8" class="mt-4 w-full border-2 border-ink bg-paper p-2" placeholder="Preview after upload…"></textarea>
+      <label class="mt-4 block text-xs font-bold uppercase">Dedupe by column index (0 = first column). Leave blank to compare whole rows.</label>
+      <input id="dedupeCol" type="number" min="0" class="mt-1 w-32 border-2 border-ink bg-paper px-2 py-2" />
+      <button type="button" id="runDedupe" class="mt-4 border-2 border-ink bg-ink px-4 py-2 text-xs font-bold uppercase text-paper hover:bg-accent hover:border-accent">Remove duplicates</button>
+    </div>
+
+    <div id="panel-csv2json" class="tab-panel hidden border-2 border-ink bg-white p-6">
+      <label class="text-xs font-bold uppercase">Upload CSV file</label>
+      <input type="file" id="fileCsvJson" accept=".csv,text/csv,text/plain" class="mt-2 block w-full max-w-md border-2 border-ink bg-paper px-3 py-2" />
+      <p id="nameCsvJson" class="mt-1 text-[10px] text-muted">No file chosen</p>
+      <textarea id="csvJsonIn" rows="8" class="mt-4 w-full border-2 border-ink bg-paper p-2" readonly placeholder="Preview after upload…"></textarea>
+      <button type="button" id="runCsv2json" class="mt-4 border-2 border-ink bg-ink px-4 py-2 text-xs font-bold uppercase text-paper hover:bg-accent hover:border-accent">Convert to JSON</button>
+    </div>
+
+    <div id="panel-json2csv" class="tab-panel hidden border-2 border-ink bg-white p-6">
+      <label class="text-xs font-bold uppercase">Upload JSON file (array of objects)</label>
+      <input type="file" id="fileJson" accept=".json,application/json,text/plain" class="mt-2 block w-full max-w-md border-2 border-ink bg-paper px-3 py-2" />
+      <p id="nameJson" class="mt-1 text-[10px] text-muted">No file chosen — or paste JSON below</p>
+      <textarea id="jsonCsvIn" rows="10" class="mt-4 w-full border-2 border-ink bg-paper p-2" placeholder='[{"name":"A","value":1}]'></textarea>
+      <button type="button" id="runJson2csv" class="mt-4 border-2 border-ink bg-ink px-4 py-2 text-xs font-bold uppercase text-paper hover:bg-accent hover:border-accent">Convert to CSV</button>
+    </div>
+
+    <div class="mt-6 border-2 border-ink bg-white p-4">
+      <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
+        <p class="text-xs font-bold uppercase">Output</p>
+        <div class="flex gap-3">
+          <button type="button" id="copyOut" class="text-[10px] font-bold uppercase text-accent hover:underline">Copy</button>
+          <button type="button" id="dlOut" class="text-[10px] font-bold uppercase text-accent hover:underline">Download</button>
+        </div>
+      </div>
+      <textarea id="output" rows="12" class="w-full border-2 border-ink bg-paper p-2" readonly aria-label="Tool output"></textarea>
+    </div>
+
+    <section class="mt-12 border-t border-ink/20 pt-10 sm:mt-16 sm:pt-12" aria-labelledby="relatedToolsHeading">
+      <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Related Founder Tools</p>
+      <h2 id="relatedToolsHeading" class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Continue the website setup workflow</h2>
+      <div class="mt-6 grid gap-3 md:grid-cols-3">
+        <a href="./business-math-calculators.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent">
+          <span>Business Math</span>
+          <span aria-hidden="true">→</span>
+        </a>
+        <a href="./ad-revenue-estimator.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent">
+          <span>Ad Revenue Estimator</span>
+          <span aria-hidden="true">→</span>
+        </a>
+        <a href="./markdown-to-html-pdf-converter.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent">
+          <span>Markdown Converter</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+
+    <footer class="mt-12 space-y-4 border-t border-ink/20 pt-6 text-xs text-muted">
+      <p>CSV files are read locally with the File API. Nothing is uploaded to The Architect’s Loop.</p>
+      <div class="space-y-2 border-t border-ink/10 pt-4 text-center">
+        <p class="text-xs font-medium text-ink">A tool by The Architect’s Loop</p>
+        <nav aria-label="Legal links" class="text-[10px] text-muted">
+          <a href="./privacy.html" class="underline hover:text-accent">Privacy</a>
+          <span aria-hidden="true"> · </span>
+          <a href="./disclaimer.html" class="underline hover:text-accent">Disclaimer</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+  <script>
+(function(){
+  var tabs=document.querySelectorAll('.tab-btn'),panels={};
+  ['merge','clean','dedupe','csv2json','json2csv'].forEach(function(t){panels[t]=document.getElementById('panel-'+t);});
+  tabs.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var t=btn.getAttribute('data-tab');
+      tabs.forEach(function(b){b.setAttribute('aria-selected',b===btn?'true':'false');});
+      Object.keys(panels).forEach(function(k){panels[k].classList.toggle('hidden',k!==t);});
+    });
+  });
+
+  function parseCSV(text){
+    var rows=[],row=[],cell='',q=false,i,c;
+    text=String(text||'').replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+    for(i=0;i<text.length;i++){
+      c=text[i];
+      if(q){
+        if(c==='"'&&text[i+1]==='"'){cell+='"';i++;}
+        else if(c==='"')q=false;
+        else cell+=c;
+      }else{
+        if(c==='"')q=true;
+        else if(c===','){row.push(cell);cell='';}
+        else if(c==='\n'){row.push(cell);rows.push(row);row=[];cell='';}
+        else cell+=c;
+      }
+    }
+    if(cell||row.length){row.push(cell);rows.push(row);}
+    return rows.filter(function(r){return r.some(function(x){return String(x).trim();});});
+  }
+
+  function toCSV(rows){
+    return rows.map(function(r){
+      return r.map(function(c){
+        var s=String(c==null?'':c);
+        return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
+      }).join(',');
+    }).join('\n');
+  }
+
+  function setOut(t,isJson){
+    var out=document.getElementById('output');
+    out.value=t;
+    document.getElementById('dlOut').textContent=isJson?'Download JSON':'Download CSV';
+  }
+
+  function bindFile(inputId,nameId,targetId,opts){
+    opts=opts||{};
+    var input=document.getElementById(inputId);
+    var nameEl=document.getElementById(nameId);
+    var target=document.getElementById(targetId);
+    input.addEventListener('change',function(){
+      var file=input.files&&input.files[0];
+      if(!file){nameEl.textContent='No file chosen';return;}
+      nameEl.textContent=file.name+' ('+Math.round(file.size/1024)+' KB)';
+      var reader=new FileReader();
+      reader.onload=function(){target.value=reader.result;target.removeAttribute('readonly');};
+      reader.onerror=function(){nameEl.textContent='Could not read file.';};
+      reader.readAsText(file);
+    });
+  }
+
+  bindFile('fileA','nameA','csvA');
+  bindFile('fileB','nameB','csvB');
+  bindFile('fileClean','nameClean','csvClean');
+  bindFile('fileDedupe','nameDedupe','csvDedupe');
+  bindFile('fileCsvJson','nameCsvJson','csvJsonIn');
+  bindFile('fileJson','nameJson','jsonCsvIn');
+
+  document.getElementById('runMerge').addEventListener('click',function(){
+    var a=parseCSV(document.getElementById('csvA').value);
+    var b=parseCSV(document.getElementById('csvB').value);
+    if(!a.length){setOut('Upload CSV file A first.',false);return;}
+    var head=a[0],out=[head];
+    a.slice(1).forEach(function(r){out.push(r);});
+    var skipHeader=b.length&&b[0].join(',')===head.join(',')?1:0;
+    b.slice(skipHeader).forEach(function(r){out.push(r);});
+    setOut(toCSV(out),false);
+  });
+
+  document.getElementById('runClean').addEventListener('click',function(){
+    var rows=parseCSV(document.getElementById('csvClean').value).map(function(r){
+      return r.map(function(c){return String(c).trim();});
+    });
+    rows=rows.filter(function(r){return r.some(Boolean);});
+    setOut(toCSV(rows),false);
+    document.getElementById('csvClean').value=toCSV(rows);
+  });
+
+  document.getElementById('runDedupe').addEventListener('click',function(){
+    var rows=parseCSV(document.getElementById('csvDedupe').value);
+    var col=document.getElementById('dedupeCol').value;
+    var seen={},out=[];
+    rows.forEach(function(r,i){
+      var key=(col===''||col==null)?r.join('\t'):String(r[parseInt(col,10)]||'');
+      if(i===0){out.push(r);return;}
+      if(!seen[key]){seen[key]=1;out.push(r);}
+    });
+    setOut(toCSV(out),false);
+  });
+
+  document.getElementById('runCsv2json').addEventListener('click',function(){
+    var rows=parseCSV(document.getElementById('csvJsonIn').value);
+    if(!rows.length){setOut('[]',true);return;}
+    var keys=rows[0];
+    var data=rows.slice(1).map(function(r){
+      var o={};
+      keys.forEach(function(k,j){o[k]=r[j]!=null?r[j]:'';});
+      return o;
+    });
+    setOut(JSON.stringify(data,null,2),true);
+  });
+
+  document.getElementById('runJson2csv').addEventListener('click',function(){
+    try{
+      var data=JSON.parse(document.getElementById('jsonCsvIn').value);
+      if(!Array.isArray(data)||!data.length)throw new Error('empty');
+      var keys=[];
+      data.forEach(function(o){
+        Object.keys(o).forEach(function(k){if(keys.indexOf(k)<0)keys.push(k);});
+      });
+      var rows=[keys].concat(data.map(function(o){return keys.map(function(k){return o[k]==null?'':o[k];});}));
+      setOut(toCSV(rows),false);
+    }catch(e){
+      setOut('Upload a JSON file or paste a valid JSON array of objects.',false);
+    }
+  });
+
+  document.getElementById('copyOut').addEventListener('click',function(){
+    navigator.clipboard.writeText(document.getElementById('output').value);
+  });
+
+  document.getElementById('dlOut').addEventListener('click',function(){
+    var text=document.getElementById('output').value;
+    var isJson=text.trim().charAt(0)==='['||text.trim().charAt(0)==='{';
+    var blob=new Blob([text],{type:isJson?'application/json':'text/csv'});
+    var u=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=u;
+    a.download=isJson?'export.json':'export.csv';
+    a.click();
+    URL.revokeObjectURL(u);
+  });
+})();
+  </script>
+</body>
+</html>

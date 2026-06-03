@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sitemap.xml Builder | The Architect’s Loop</title>
+  <meta name="description" content="Build a sitemap.xml from a list of page URLs. Free client-side generator for static websites." />
+  <link rel="canonical" href="https://thearchitectsloop.com/sitemap-xml-builder.html" />
+  <link rel="icon" type="image/png" href="/images/tal favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{ink:'#0a0a0a',paper:'#f4f4f0',muted:'#6b6b6b',accent:'#1a56ff'}}}};</script>
+  <style>*{border-radius:0!important}::selection{background:#1a56ff;color:#f4f4f0}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #1a56ff;outline-offset:3px}</style>
+</head>
+<body class="min-h-screen bg-paper text-ink antialiased">
+  <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+    <nav class="mb-8 flex flex-wrap justify-between gap-4 border-b border-ink/20 pb-4">
+      <a href="./" class="text-xs font-bold uppercase tracking-[0.2em] hover:text-accent">The Architect’s Loop</a>
+      <a href="./robots-txt-builder.html" class="text-[10px] font-bold uppercase tracking-[0.16em] text-muted hover:text-accent">Robots.txt Builder →</a>
+    </nav>
+    <header class="mb-10 border-b-2 border-ink pb-6">
+      <p class="text-xs uppercase tracking-[0.2em] text-muted">Client-side only</p>
+      <h1 class="mt-2 text-3xl font-bold sm:text-4xl">Sitemap.xml Builder</h1>
+      <p class="mt-3 max-w-2xl text-sm text-muted">Paste page URLs (one per line). Use full URLs including https://. Upload the result as <code class="font-bold">sitemap.xml</code> on your host.</p>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <button type="button" id="copyBtn" class="border-2 border-ink bg-ink px-4 py-2 text-xs font-bold uppercase tracking-wider text-paper hover:bg-accent hover:border-accent">Copy XML</button>
+        <button type="button" id="downloadBtn" class="border-2 border-ink bg-paper px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-ink hover:text-paper">Download</button>
+      </div>
+      <p id="feedback" class="mt-2 hidden text-xs font-bold text-accent" role="status"></p>
+    </header>
+    <main class="grid gap-8 lg:grid-cols-2">
+      <section class="border-2 border-ink bg-white p-6">
+        <label class="mb-2 block text-xs font-bold uppercase tracking-wider" for="urls">Page URLs</label>
+        <textarea id="urls" rows="14" class="w-full border-2 border-ink bg-paper px-3 py-2 text-sm" placeholder="https://example.com/&#10;https://example.com/about.html"></textarea>
+        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+          <div>
+            <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-muted" for="freq">changefreq</label>
+            <select id="freq" class="w-full border-2 border-ink bg-paper px-2 py-2 text-sm">
+              <option value="weekly" selected>weekly</option>
+              <option value="daily">daily</option>
+              <option value="monthly">monthly</option>
+              <option value="yearly">yearly</option>
+            </select>
+          </div>
+          <div>
+            <label class="mb-1 block text-[10px] font-bold uppercase tracking-wider text-muted" for="priority">priority</label>
+            <input id="priority" type="text" value="0.8" class="w-full border-2 border-ink bg-paper px-2 py-2 text-sm" />
+          </div>
+        </div>
+        <p class="mt-3 text-[10px] text-muted">lastmod is set to today’s date for each URL.</p>
+      </section>
+      <section class="border-2 border-ink bg-white p-6">
+        <pre id="output" class="max-h-[28rem] overflow-auto border-2 border-ink bg-paper p-4 text-xs leading-relaxed"></pre>
+      </section>
+    </main>
+
+    <section class="mt-12 border-t border-ink/20 pt-10 sm:mt-16 sm:pt-12" aria-labelledby="relatedToolsHeading">
+      <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">Related Founder Tools</p>
+      <h2 id="relatedToolsHeading" class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Continue the website setup workflow</h2>
+      <div class="mt-6 grid gap-3 md:grid-cols-3">
+        <a href="./robots-txt-builder.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Robots.txt Builder</span><span aria-hidden="true">→</span></a>
+        <a href="./founder-website-visibility-report.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>Visibility Checker</span><span aria-hidden="true">→</span></a>
+        <a href="./seo-snippet-preview.html" class="flex items-center justify-between gap-4 border-2 border-ink bg-white px-4 py-3 text-sm font-bold transition-colors hover:border-accent hover:text-accent"><span>SEO Snippet Preview</span><span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <footer class="mt-12 border-t border-ink/20 pt-6 text-center text-[10px] text-muted">
+      <p>A tool by The Architect’s Loop · <a href="./privacy.html" class="underline hover:text-accent">Privacy</a></p>
+    </footer>
+  </div>
+  <script>
+(function(){
+  var urls=document.getElementById('urls'),freq=document.getElementById('freq'),priority=document.getElementById('priority'),output=document.getElementById('output');
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function today(){return new Date().toISOString().slice(0,10);}
+  function build(){
+    var list=String(urls.value||'').split(/\n/).map(function(u){return u.trim();}).filter(Boolean);
+    var bad=list.filter(function(u){try{new URL(u);return false;}catch(e){return true;}});
+    if(bad.length)return '<!-- Fix invalid URLs -->\n'+bad.join('\n');
+    var xml=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'];
+    list.forEach(function(loc){
+      xml.push('  <url>');
+      xml.push('    <loc>'+esc(loc)+'</loc>');
+      xml.push('    <lastmod>'+today()+'</lastmod>');
+      xml.push('    <changefreq>'+esc(freq.value)+'</changefreq>');
+      xml.push('    <priority>'+esc(priority.value||'0.8')+'</priority>');
+      xml.push('  </url>');
+    });
+    xml.push('</urlset>');
+    return xml.join('\n');
+  }
+  function render(){output.textContent=build();}
+  function msg(t){var f=document.getElementById('feedback');f.textContent=t;f.classList.remove('hidden');setTimeout(function(){f.classList.add('hidden');},2000);}
+  urls.addEventListener('input',render);freq.addEventListener('change',render);priority.addEventListener('input',render);
+  document.getElementById('copyBtn').addEventListener('click',function(){navigator.clipboard.writeText(build()).then(function(){msg('Copied.');});});
+  document.getElementById('downloadBtn').addEventListener('click',function(){var b=new Blob([build()],{type:'application/xml'});var u=URL.createObjectURL(b);var a=document.createElement('a');a.href=u;a.download='sitemap.xml';a.click();URL.revokeObjectURL(u);});
+  render();
+})();
+  </script>
+</body>
+</html>
