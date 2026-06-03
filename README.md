@@ -1,8 +1,10 @@
-# The Architect’s Loop — Founder Utilities Toolkit
+# The Architect’s Loop — Founder site audit & free browser tools
 
-The Architect’s Loop is a privacy-first collection of browser tools for founders, creators, and small website owners.
+**Lead offer:** [Run a founder site audit](https://thearchitectsloop.com/founder-website-visibility-report.html) (clarity, SEO basics, trust) before you launch or pitch — free, in your browser.
 
-Built as static HTML pages: **no login**, **no database**, **no tracking on the tools**, **no server-side processing** for tool use, **no AI/API cost** on the public toolkit.
+The site also hosts **14 more utilities** (ad revenue, Markdown, CSV, Obsidian helpers, etc.) as a privacy-first directory. **TAO** (The Architect’s Oracle) will be the separate flagship product: structured feasibility from a case, client-side.
+
+Built as static HTML: **no login**, **no database**, **no tracking on the tools**, **no server-side tool processing**, **no AI/API cost** on the public toolkit.
 
 **Live site:** https://thearchitectsloop.com/
 
@@ -29,11 +31,10 @@ Optional: mirror `utility website/*` at repo root if that matches your hosting l
 ### Suggested commit message
 
 ```
-Complete TAL v1: 15 tools, combined workbenches, Kabak signup, docs
+Homepage: lead with founder site audit; update docs
 
-- Ship all homepage tools; CSV Workbench uses local file upload
-- Related Founder Tools on all inner pages
-- Update sitemap, privacy, disclaimer, README, TAL_PROJECT.md
+- Job-first hero and meta; CTA to visibility report
+- README and TAL_PROJECT.md positioning notes
 ```
 
 ---
@@ -115,9 +116,12 @@ Payhip library: https://payhip.com/thearchitectsloop
 
 ## Cross-linking & homepage
 
-* **Homepage** (`index.html`): full tool directory — **15 Tools Available**, no “Shipping Soon”
+* **Homepage** (`index.html`): **job-first** — “Run a founder site audit in 15 minutes” + CTA to visibility report; full tool directory below (**15 Tools Available**)
+* **Meta title:** Run a founder site audit in your browser \| The Architect’s Loop
 * **Inner pages:** “Related Founder Tools” section before the footer (tools, guides, privacy, disclaimer)
 * **Email signup:** optional block on homepage (Kabak)
+
+Positioning detail and changelog: [`TAL_PROJECT.md`](TAL_PROJECT.md) → **Positioning (June 2026)**
 
 ---
 
@@ -182,9 +186,9 @@ After changes, update `sitemap.xml` and legal pages when relevant.
 
 ## Project status
 
-**TAL toolkit v1 is complete** — all homepage-listed tools are live.
+**TAL toolkit v1 is complete** — all 15 tools live; homepage leads with the **visibility audit** (interim wedge until TAO ships).
 
-**Next:** TAO development; optional TAL maintenance (guides, assets, self-hosted CSS).
+**Next:** TAO client-side launch (one-sentence product: feasibility report from Lean Canvas case); optional TAL maintenance.
 
 Details and changelog: [`TAL_PROJECT.md`](TAL_PROJECT.md)
 

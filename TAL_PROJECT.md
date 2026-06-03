@@ -17,8 +17,32 @@
 | Live tools | **15** |
 | Guides | **4** |
 | Homepage | `utility website/index.html` |
+| **Lead job (marketing)** | Founder site audit → [visibility report](https://thearchitectsloop.com/founder-website-visibility-report.html) |
+| **Catalog** | 14 other tools linked from homepage directory |
 | Email signup | Kabak — `https://kabak.info/f/tal-notify-me` |
 | Related tools block | All tool, guide, and legal pages (not homepage) |
+| **Flagship (planned)** | **TAO** — feasibility report from Lean Canvas case (client-side) |
+
+---
+
+## Positioning (June 2026)
+
+Reddit feedback: **“Founder toolkit” is too broad** — lead with one repeat job; browser-only is trust, not the headline.
+
+| Layer | What |
+|-------|------|
+| **Pitch (TAL interim)** | Run a founder site audit before launch or pitch |
+| **Primary CTA** | `founder-website-visibility-report.html` |
+| **Directory** | All 15 tools remain on homepage |
+| **Future pitch (TAO)** | Turn idea + Lean Canvas into a feasibility report — client-side, store nothing |
+
+### Homepage copy (`index.html`)
+
+- **Title:** Run a founder site audit in your browser \| The Architect's Loop
+- **H1:** Run a founder site audit in 15 minutes
+- **Eyebrow:** Before you launch or pitch
+- **Hero CTA:** Start the visibility checklist
+- **Nav tagline:** Free tools · Browser only
 
 ---
 
@@ -144,6 +168,19 @@ Also: `robots.txt`, `sitemap.xml`, `images/` (favicon, etc.)
 
 Production is **not** auto-deployed from GitHub.
 
+### Pending Google Search Console indexing (quota hit 2026-06-03)
+
+Request indexing tomorrow for these URLs only (others done for today):
+
+- https://thearchitectsloop.com/csv-workbench.html
+- https://thearchitectsloop.com/obsidian-toolkit.html
+- https://thearchitectsloop.com/how-much-can-a-website-earn-from-ads.html
+- https://thearchitectsloop.com/what-is-rpm-in-website-advertising.html
+- https://thearchitectsloop.com/how-many-visitors-do-you-need-to-make-money-online.html
+- https://thearchitectsloop.com/how-to-convert-markdown-to-html-and-pdf.html
+- https://thearchitectsloop.com/privacy.html
+- https://thearchitectsloop.com/disclaimer.html
+
 ### Production checklist (host)
 
 - [ ] Upload full `utility website/` (or sync changed files since last deploy)
@@ -190,6 +227,14 @@ Complete TAL v1: 15 tools, combined workbenches, Kabak signup, docs
 
 ## Changelog
 
+### 2026-06-03 — Homepage positioning (job-first pitch)
+
+- Hero: visibility audit as lead job; toolkit as directory below
+- Meta title/description and OG/Twitter aligned
+- Primary CTA to `founder-website-visibility-report.html`
+- About section reframed as “after the audit”
+- Docs: `README.md`, `TAL_PROJECT.md` (this file)
+
 ### 2026-06-03 — Related tools + CSV upload fix
 
 - Related Founder Tools added to all new tool pages that lacked it
@@ -211,7 +256,8 @@ Complete TAL v1: 15 tools, combined workbenches, Kabak signup, docs
 | Track | Notes |
 |-------|--------|
 | **TAO** | Separate product; different architecture (see TAO workspace) |
-| **TAL maintenance** | New guides, Payhip assets, self-hosted Tailwind, tune individual tools |
+| **TAL maintenance** | New guides, Payhip assets, self-hosted Tailwind; revisit lead job if analytics favor another tool |
+| **TAO launch** | Replace interim audit pitch on main brand when TAO client-side ships |
 
 ---
 
