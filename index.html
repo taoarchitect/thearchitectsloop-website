@@ -48,6 +48,18 @@
       outline: 2px solid #1a56ff;
       outline-offset: 3px;
     }
+
+    #tal-notify-form input:disabled,
+    #tal-notify-form button:disabled {
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
+
+    #tal-notify-form input:focus-visible,
+    #tal-notify-form button:focus-visible {
+      outline: 2px solid #1a56ff;
+      outline-offset: 3px;
+    }
   </style>
 </head>
 
@@ -546,6 +558,79 @@
           </article>
         </div>
       </section>
+
+      <section class="mt-12 border-t border-ink/20 pt-10 sm:mt-16 sm:pt-12" aria-labelledby="notify-heading">
+        <div class="max-w-2xl">
+          <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted">
+            Optional Updates
+          </p>
+
+          <h2 id="notify-heading" class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+            Get New Tool Updates
+          </h2>
+
+          <p class="mt-5 text-sm leading-relaxed text-muted">
+            The Architect’s Loop tools work without accounts, tracking, or required signups.
+          </p>
+
+          <p class="mt-4 text-sm leading-relaxed text-muted">
+            If you’d like to hear when new tools, guides, or free downloads are added, you can leave your email below.
+          </p>
+
+          <p class="mt-4 text-sm font-bold text-ink">
+            This is completely optional.
+          </p>
+
+          <div class="mt-8 border-2 border-ink bg-white p-6 sm:p-8">
+            <form
+              id="tal-notify-form"
+              class="space-y-4"
+              action="https://kabak.info/f/tal-notify-me"
+              method="POST"
+              novalidate
+            >
+              <input
+                type="text"
+                name="_honey"
+                value=""
+                tabindex="-1"
+                autocomplete="off"
+                aria-hidden="true"
+                class="absolute h-px w-px overflow-hidden whitespace-nowrap border-0 p-0"
+                style="clip: rect(0, 0, 0, 0); clip-path: inset(50%);"
+              />
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+                <label for="tal-notify-email" class="sr-only">Your email address</label>
+                <input
+                  id="tal-notify-email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                  placeholder="Your email address"
+                  class="min-w-0 flex-1 border-2 border-ink bg-paper px-4 py-3 text-sm font-bold text-ink placeholder:font-normal placeholder:text-muted"
+                />
+                <button
+                  id="tal-notify-submit"
+                  type="submit"
+                  class="shrink-0 border-2 border-ink bg-ink px-5 py-3 text-xs font-bold uppercase tracking-[0.14em] text-paper transition-colors hover:border-accent hover:bg-accent disabled:hover:border-ink disabled:hover:bg-ink"
+                >
+                  Notify Me
+                </button>
+              </div>
+
+              <p id="tal-notify-error" class="hidden text-sm font-bold text-ink" role="alert"></p>
+              <p id="tal-notify-success" class="hidden text-sm leading-relaxed text-muted" role="status">
+                Thanks. You'll be notified when new tools are released.
+              </p>
+            </form>
+
+            <p class="mt-5 text-[10px] leading-relaxed text-muted">
+              No account required. No tracking required. Email signup is optional.
+            </p>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer class="border-t border-ink/20 pt-6">
@@ -578,5 +663,101 @@
       </div>
     </footer>
   </div>
+
+  <script>
+    (function () {
+      var form = document.getElementById('tal-notify-form');
+      var emailInput = document.getElementById('tal-notify-email');
+      var submitBtn = document.getElementById('tal-notify-submit');
+      var successMsg = document.getElementById('tal-notify-success');
+      var errorMsg = document.getElementById('tal-notify-error');
+
+      if (!form || !emailInput || !submitBtn) return;
+
+      function hideMessages() {
+        successMsg.classList.add('hidden');
+        errorMsg.classList.add('hidden');
+        errorMsg.textContent = '';
+      }
+
+      function showError(message) {
+        successMsg.classList.add('hidden');
+        errorMsg.textContent = message;
+        errorMsg.classList.remove('hidden');
+      }
+
+      function setSuccessState() {
+        hideMessages();
+        successMsg.classList.remove('hidden');
+        submitBtn.textContent = 'Will Be Notified';
+        submitBtn.disabled = true;
+        emailInput.disabled = true;
+      }
+
+      function isValidEmail(value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      }
+
+      function getFormActionUrl() {
+        var action = (form.getAttribute('action') || '').trim();
+        if (!action || action === '#') return '';
+        try {
+          var url = new URL(action, window.location.href);
+          if (url.protocol === 'http:' || url.protocol === 'https:') return url.href;
+        } catch (e) { /* ignore */ }
+        return '';
+      }
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        hideMessages();
+
+        var email = emailInput.value.trim();
+        if (!email || !isValidEmail(email)) {
+          showError('Please enter a valid email address.');
+          emailInput.focus();
+          return;
+        }
+
+        var actionUrl = getFormActionUrl();
+        if (!actionUrl) {
+          showError('Email signup is not connected yet. Please try again later.');
+          return;
+        }
+
+        submitBtn.disabled = true;
+
+        fetch(actionUrl, {
+          method: 'POST',
+          body: new FormData(form),
+        })
+          .then(function (response) {
+            if (response.ok) {
+              setSuccessState();
+              return;
+            }
+            return response.text().then(function (text) {
+              var message = 'Something went wrong. Please try again.';
+              try {
+                var data = JSON.parse(text);
+                if (data && data.error) message = data.error;
+                else if (data && data.message) message = data.message;
+              } catch (e) {
+                if (text && text.length < 200) message = text;
+              }
+              throw new Error(message);
+            });
+          })
+          .catch(function (err) {
+            submitBtn.disabled = false;
+            if (err.message === 'Failed to fetch') {
+              showError('Could not reach the signup service. Check your connection and try again.');
+              return;
+            }
+            showError(err.message || 'Something went wrong. Please try again.');
+          });
+      });
+    })();
+  </script>
 </body>
 </html>
